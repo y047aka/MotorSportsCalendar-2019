@@ -1,0 +1,146 @@
+body, header, footer, ul, li
+  margin: 0
+  padding: 0
+  line-height: 1.0
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", YuGothic, "ヒラギノ角ゴ ProN W3", Hiragino Kaku Gothic ProN, Arial, "メイリオ", Meiryo, sans-serif
+
+h1, h2, h3, h4, p
+  margin: 0
+  padding: 0
+  font-weight: normal
+
+html
+  font-size: 62.5%
+
+body
+  font-size: 1.6rem
+  color: hsl(210, 40%, 30%)
+
+  & > div
+    display: grid
+    grid-template-rows: auto auto auto
+
+    @media screen and (max-width: 479px)
+      grid-template-columns: 1.5rem 1fr 1.5rem
+
+    @media screen and (min-width: 480px) and (max-width: 1279px)
+      grid-template-columns: 1fr 90% 1fr
+
+    @media screen and (min-width: 1280px)
+      grid-template-columns: 1fr 80% 1fr
+
+    & > header.site-header
+      grid-row: 1
+      grid-column: 2
+      padding: 3.5rem 0 3rem
+
+    & > main
+      grid-row: 2
+      grid-column: 2
+
+    & > footer.site-footer
+      grid-row: 3
+      grid-column: 2
+      padding: 3rem 0
+
+a
+  color: hsl(210, 100%, 40%)
+  text-decoration: none
+
+  &:hover
+    text-decoration: underline
+
+header.site-header
+
+  h1
+    font-size: 2.5rem
+
+    span
+      padding: 0 1rem
+      font-size: 1.8rem
+
+      &::before
+        content: ": "
+
+main
+  border-top: solid 0.5rem hsla(210, 40%, 30%, 0.05)
+  border-bottom: solid 0.5rem hsla(210, 40%, 30%, 0.05)
+
+  section
+    padding: 3rem 0 4rem
+
+    & + section
+      border-top: solid 0.5rem hsla(210, 40%, 30%, 0.05)
+
+  h1
+    padding: 1rem 0
+    font-size: 2.4rem
+
+  * + h1
+    margin-top: 4rem
+
+  h2
+    padding: 1rem 0
+    font-size: 2rem
+
+  * + h2
+    margin-top: 1rem
+
+  ul
+    padding-left: 2em
+    list-style: square
+
+    li
+      line-height: 2.6rem
+
+  table.heatmap
+    width: 100%
+    border-spacing: 0.3rem
+
+    tr
+      position: relative
+
+      th
+        position: relative
+        left: 0.2rem
+        height: 3rem
+        font-weight: normal
+
+        span
+          position: absolute
+          top: 2rem
+          left: 0
+          font-size: 1.1rem
+      
+      td
+        position: relative
+        left: 0.2rem
+        background: hsla(210, 40%, 30%, 0.05)
+
+      td:first-child
+        left: -0.3rem
+        width: 14rem
+        font-size: 1.5rem
+        background: #FFF
+
+      td.raceweek
+        position: relative
+        background: hsl(210, 100%, 40%)
+
+        &:hover::before
+          position: absolute
+          top: -4rem
+          left: 0
+          display: block
+          width: 20rem
+          padding: 0.5rem
+          content: attr(data-tooltip)
+          background: #333
+          color: #FFF
+          border-radius: 0.4rem
+          box-shadow: 0 0 0 0.2rem #FFF
+
+footer.site-footer
+  .copyright
+    text-align: right
+    font-size: 1.4rem

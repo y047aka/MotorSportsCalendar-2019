@@ -1,0 +1,121 @@
+@charset "UTF-8";
+body, header, footer, ul, li {
+  margin: 0;
+  padding: 0;
+  line-height: 1.0;
+  font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", YuGothic, "ヒラギノ角ゴ ProN W3", Hiragino Kaku Gothic ProN, Arial, "メイリオ", Meiryo, sans-serif; }
+
+h1, h2, h3, h4, p {
+  margin: 0;
+  padding: 0;
+  font-weight: normal; }
+
+html {
+  font-size: 62.5%; }
+
+body {
+  font-size: 1.6rem;
+  color: #2e4d6b; }
+  body > div {
+    display: grid;
+    grid-template-rows: auto auto auto; }
+    @media screen and (max-width: 479px) {
+      body > div {
+        grid-template-columns: 1.5rem 1fr 1.5rem; } }
+    @media screen and (min-width: 480px) and (max-width: 1279px) {
+      body > div {
+        grid-template-columns: 1fr 90% 1fr; } }
+    @media screen and (min-width: 1280px) {
+      body > div {
+        grid-template-columns: 1fr 80% 1fr; } }
+    body > div > header.site-header {
+      grid-row: 1;
+      grid-column: 2;
+      padding: 3.5rem 0 3rem; }
+    body > div > main {
+      grid-row: 2;
+      grid-column: 2; }
+    body > div > footer.site-footer {
+      grid-row: 3;
+      grid-column: 2;
+      padding: 3rem 0; }
+
+a {
+  color: #0066cc;
+  text-decoration: none; }
+  a:hover {
+    text-decoration: underline; }
+
+header.site-header h1 {
+  font-size: 2.5rem; }
+  header.site-header h1 span {
+    padding: 0 1rem;
+    font-size: 1.8rem; }
+    header.site-header h1 span::before {
+      content: ": "; }
+
+main {
+  border-top: solid 0.5rem rgba(46, 77, 107, 0.05);
+  border-bottom: solid 0.5rem rgba(46, 77, 107, 0.05); }
+  main section {
+    padding: 3rem 0 4rem; }
+    main section + section {
+      border-top: solid 0.5rem rgba(46, 77, 107, 0.05); }
+  main h1 {
+    padding: 1rem 0;
+    font-size: 2.4rem; }
+  main * + h1 {
+    margin-top: 4rem; }
+  main h2 {
+    padding: 1rem 0;
+    font-size: 2rem; }
+  main * + h2 {
+    margin-top: 1rem; }
+  main ul {
+    padding-left: 2em;
+    list-style: square; }
+    main ul li {
+      line-height: 2.6rem; }
+  main table.heatmap {
+    width: 100%;
+    border-spacing: 0.3rem; }
+    main table.heatmap tr {
+      position: relative; }
+      main table.heatmap tr th {
+        position: relative;
+        left: 0.2rem;
+        height: 3rem;
+        font-weight: normal; }
+        main table.heatmap tr th span {
+          position: absolute;
+          top: 2rem;
+          left: 0;
+          font-size: 1.1rem; }
+      main table.heatmap tr td {
+        position: relative;
+        left: 0.2rem;
+        background: rgba(46, 77, 107, 0.05); }
+      main table.heatmap tr td:first-child {
+        left: -0.3rem;
+        width: 14rem;
+        font-size: 1.5rem;
+        background: #FFF; }
+      main table.heatmap tr td.raceweek {
+        position: relative;
+        background: #0066cc; }
+        main table.heatmap tr td.raceweek:hover::before {
+          position: absolute;
+          top: -4rem;
+          left: 0;
+          display: block;
+          width: 20rem;
+          padding: 0.5rem;
+          content: attr(data-tooltip);
+          background: #333;
+          color: #FFF;
+          border-radius: 0.4rem;
+          box-shadow: 0 0 0 0.2rem #FFF; }
+
+footer.site-footer .copyright {
+  text-align: right;
+  font-size: 1.4rem; }
