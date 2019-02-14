@@ -1,12 +1,6 @@
 import { span, section, table, tr, th, td } from '@hyperapp/html'
 
-const array = (() => {
-  const array = []
-  for (var i = 0; i < 365; i++) {
-    array.push(new Date(2019, 0, i + 1))
-  }
-  return array.filter(d => d.getDay() === 0)
-})()
+const array = [...Array(365).keys()].map(d => new Date(2019, 0, d + 1)).filter(d => d.getDay() === 0)
 
 const check = (sunday, series) => {
   const a = series.races.filter(d => {
