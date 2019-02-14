@@ -3,13 +3,14 @@ import axios from 'axios'
 
 // Hyperapp
 import { app } from 'hyperapp'
-import { div, main } from '@hyperapp/html'
+import { div, main, h1, h2, a } from '@hyperapp/html'
 
 // views
 import SiteHeader from './view/SiteHeader'
-import SiteFooter from './view/SiteFooter';
-import Profile from './view/Profile'
+import SiteFooter from './view/SiteFooter'
 import Calender from './view/Calender'
+import Links from './view/Links'
+import Repositories from './view/Repositories'
 
 const state = {
   calender: [
@@ -52,7 +53,8 @@ const view = (state, actions) => (
     SiteHeader(),
     main([
       Calender(),
-      Profile()
+      Links(),
+      Repositories(),
     ]),
     SiteFooter()
   ])
