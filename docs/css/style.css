@@ -78,12 +78,12 @@ main {
       line-height: 2.6rem; }
   main table.heatmap {
     width: 100%;
-    border-spacing: 0.3rem; }
+    border-spacing: 0.2rem; }
     main table.heatmap tr {
       position: relative; }
       main table.heatmap tr th {
         position: relative;
-        left: 0.2rem;
+        left: 0.1rem;
         height: 3rem;
         font-weight: normal; }
         main table.heatmap tr th span {
@@ -93,28 +93,49 @@ main {
           font-size: 1.1rem; }
       main table.heatmap tr td {
         position: relative;
-        left: 0.2rem;
-        background: rgba(46, 77, 107, 0.05); }
-      main table.heatmap tr td:first-child {
-        left: -0.3rem;
-        width: 14rem;
-        font-size: 1.5rem;
-        background: #FFF; }
-      main table.heatmap tr td.raceweek {
-        position: relative;
-        background: #0066cc; }
-        main table.heatmap tr td.raceweek:hover::before {
+        left: 0.1rem;
+        text-align: center;
+        background: rgba(46, 77, 107, 0.1);
+        border-radius: 0.2rem; }
+        main table.heatmap tr td span {
           position: absolute;
-          top: -4rem;
+          top: 0;
           left: 0;
-          display: block;
-          width: 20rem;
-          padding: 0.5rem;
-          content: attr(data-tooltip);
-          background: #333;
-          color: #FFF;
-          border-radius: 0.4rem;
-          box-shadow: 0 0 0 0.2rem #FFF; }
+          right: 0;
+          bottom: 0;
+          margin: auto;
+          color: #FFF; }
+          @media screen and (max-width: 479px) {
+            main table.heatmap tr td span {
+              display: none; } }
+          @media screen and (min-width: 480px) and (max-width: 1279px) {
+            main table.heatmap tr td span {
+              display: none; } }
+          @media screen and (min-width: 1280px) {
+            main table.heatmap tr td span {
+              font-size: 1.2rem;
+              line-height: 1.5; } }
+        main table.heatmap tr td:first-child {
+          left: -0.2rem;
+          width: 14rem;
+          text-align: left;
+          font-size: 1.5rem;
+          background: #FFF; }
+        main table.heatmap tr td.raceweek {
+          position: relative;
+          background: #0066cc; }
+          main table.heatmap tr td.raceweek:hover::before {
+            position: absolute;
+            top: -4rem;
+            left: 0;
+            display: block;
+            width: 20rem;
+            padding: 0.5rem;
+            content: attr(data-tooltip);
+            background: #333;
+            color: #FFF;
+            border-radius: 0.4rem;
+            box-shadow: 0 0 0 0.2rem #FFF; }
 
 footer.site-footer .copyright {
   text-align: right;
