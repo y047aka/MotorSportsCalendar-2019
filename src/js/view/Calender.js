@@ -24,7 +24,7 @@ const TableBody = series => state =>
   tr([
     td(series.seriesName),
     sundays.map(d => ([
-      check(d, series) ? td({ class: 'raceweek', 'data-tooltip': '24 Hours of Le Mans' }, d.getDate()) : td(d.getDate())
+      check(d, series) ? td({ class: 'raceweek', 'data-tooltip': '24 Hours of Le Mans' }, span([d.getDate()])) : td([span(d.getDate())])
     ]))
   ])
 
