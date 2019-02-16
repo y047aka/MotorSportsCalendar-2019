@@ -97,24 +97,6 @@ main {
         text-align: center;
         background: rgba(46, 77, 107, 0.08);
         border-radius: 0.2rem; }
-        main table.heatmap tr td span {
-          position: absolute;
-          top: 0;
-          left: 0;
-          right: 0;
-          bottom: 0;
-          margin: auto;
-          color: #FFF; }
-          @media screen and (max-width: 479px) {
-            main table.heatmap tr td span {
-              display: none; } }
-          @media screen and (min-width: 480px) and (max-width: 1279px) {
-            main table.heatmap tr td span {
-              display: none; } }
-          @media screen and (min-width: 1280px) {
-            main table.heatmap tr td span {
-              font-size: 1rem;
-              line-height: 1.6; } }
         main table.heatmap tr td:first-child {
           left: -0.2rem;
           width: 14rem;
@@ -124,18 +106,47 @@ main {
         main table.heatmap tr td.raceweek {
           position: relative;
           background: #0066cc; }
-          main table.heatmap tr td.raceweek:hover::before {
+          main table.heatmap tr td.raceweek label {
+            width: 100%;
+            height: 100%;
+            background: red; }
+            main table.heatmap tr td.raceweek label input {
+              display: none; }
+          main table.heatmap tr td.raceweek span {
             position: absolute;
-            top: -4rem;
+            top: 0;
             left: 0;
-            display: block;
-            width: 20rem;
+            right: 0;
+            bottom: 0;
+            margin: auto;
+            color: #FFF; }
+            @media screen and (max-width: 479px) {
+              main table.heatmap tr td.raceweek span {
+                display: none; } }
+            @media screen and (min-width: 480px) and (max-width: 1279px) {
+              main table.heatmap tr td.raceweek span {
+                display: none; } }
+            @media screen and (min-width: 1280px) {
+              main table.heatmap tr td.raceweek span {
+                font-size: 1rem;
+                line-height: 1.6; } }
+          main table.heatmap tr td.raceweek div {
+            position: absolute;
+            top: 2.5rem;
+            left: -1rem;
+            z-index: 1;
+            display: none;
+            width: 30rem;
             padding: 0.5rem;
-            content: attr(data-tooltip);
-            background: #333;
+            text-align: left;
+            font-size: 1.4rem;
+            line-height: 1.3;
+            background: #0066cc;
             color: #FFF;
-            border-radius: 0.4rem;
+            border-radius: 0.3rem;
             box-shadow: 0 0 0 0.2rem #FFF; }
+          main table.heatmap tr td.raceweek input:checked + div {
+            display: block; }
 
 footer.site-footer .copyright {
   text-align: right;

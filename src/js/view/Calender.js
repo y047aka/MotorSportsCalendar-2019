@@ -1,4 +1,4 @@
-import { span, section, table, tr, th, td } from '@hyperapp/html'
+import { div, span, section, table, tr, th, td, input, label } from '@hyperapp/html'
 
 const sundays = [...Array(365).keys()].map(d => new Date(2019, 0, d + 1)).filter(d => d.getDay() === 0)
 
@@ -22,7 +22,13 @@ const TableBody = series => state =>
       })
 
       if (event) {
-        return td({ class: 'raceweek', 'data-tooltip': `${ event.name }` }, span([sunday.getDate()]))
+        return td({ class: 'raceweek' }, [
+          label([
+            span([sunday.getDate()]),
+            input({ type: 'radio', name: `radio${ series.seriesName }` }),
+            div({ innerHTML: `${ event.date }<br>${ event.name }` })
+          ])
+        ])
       } else {
         return td('')
       }
