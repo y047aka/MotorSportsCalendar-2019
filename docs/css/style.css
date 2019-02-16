@@ -95,7 +95,7 @@ main {
         position: relative;
         left: 0.1rem;
         text-align: center;
-        background: rgba(46, 77, 107, 0.05);
+        background: rgba(46, 77, 107, 0.08);
         border-radius: 0.2rem; }
         main table.heatmap tr td span {
           position: absolute;
