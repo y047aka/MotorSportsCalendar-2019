@@ -16,7 +16,7 @@ const TableBody = series => state =>
   tr([
     td(series.seriesName),
     sundays.map(sunday => {
-      const event = series.races.find(s => {
+      const event = series.races.reverse().find(s => {
         const difference = sunday - new Date(s.date.replace(/-/g, '/'))
         return (difference >= 0 && difference < 7 * (1000 * 60 * 60 * 24))
       })
