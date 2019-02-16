@@ -24,7 +24,7 @@ const TableBody = series => state =>
       if (event) {
         return td({ class: 'raceweek', 'data-tooltip': `${ event.name }` }, span([sunday.getDate()]))
       } else {
-        return td([span(sunday.getDate())])
+        return td('')
       }
     })
   ])
