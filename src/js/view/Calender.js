@@ -25,7 +25,7 @@ const TableBody = series => state =>
         return td({ class: 'raceweek' }, [
           label([
             span([sunday.getDate()]),
-            input({ type: 'radio', name: `radio${ series.seriesName }` }),
+            input({ type: 'checkbox', name: `checkbox${ series.seriesName }` }),
             div({ innerHTML: `${ event.date }<br>${ event.name }` })
           ])
         ])
