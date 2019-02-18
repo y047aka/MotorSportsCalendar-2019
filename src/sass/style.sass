@@ -173,6 +173,18 @@ main
             border-radius: 0.3rem
             box-shadow: 0 0 0 0.2rem #FFF
 
+            &::after
+              content: ""
+              position: absolute
+              right: 0
+              top: -0.8rem
+              left: 1rem
+              width: 0
+              height: 0
+              border-style: solid
+              border-color: transparent transparent hsl(210, 100%, 40%) transparent
+              border-width: 0 0.8rem 0.8rem 0.8rem
+
           input:checked + div
             display: block
         

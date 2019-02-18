@@ -145,6 +145,17 @@ main {
             color: #FFF;
             border-radius: 0.3rem;
             box-shadow: 0 0 0 0.2rem #FFF; }
+            main table.heatmap tr td.raceweek div::after {
+              content: "";
+              position: absolute;
+              right: 0;
+              top: -0.8rem;
+              left: 1rem;
+              width: 0;
+              height: 0;
+              border-style: solid;
+              border-color: transparent transparent #0066cc transparent;
+              border-width: 0 0.8rem 0.8rem 0.8rem; }
           main table.heatmap tr td.raceweek input:checked + div {
             display: block; }
 
