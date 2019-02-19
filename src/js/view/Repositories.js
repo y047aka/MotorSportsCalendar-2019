@@ -6,5 +6,5 @@ export default () => state =>
     h2('Program:'),
     a({ href: 'https://github.com/y047aka/MotorSportsCalendar', target: '_blank' }, 'https://github.com/y047aka/MotorSportsCalendar'),
     h2('Data:'),
-    a({ href: 'https://github.com/y047aka/MotorSportsSchedules', target: '_blank' }, 'https://github.com/y047aka/MotorSportsSchedules')        
+    a({ href: 'https://github.com/y047aka/MotorSportsData/tree/master/schedules', target: '_blank' }, 'https://github.com/y047aka/MotorSportsData/schedules')        
   ])
