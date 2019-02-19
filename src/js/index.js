@@ -29,17 +29,17 @@ const view = (state, actions) => (
     oncreate: async () => {
       const calendars = await Promise.all([
         'F1_2019.json',
-        'IndyCar_2019.json',
         'FormulaE_2018-19.json',
-        'SuperFormula_2019.json',
         'WEC_2018-19.json',
         'WEC_2019-20.json',
         'IMSA_2019.json',
+        'IndyCar_2019.json',
+        'NASCAR_2019.json',
+        'SuperFormula_2019.json',
         'SuperGT_2019.json',
         'DTM_2019.json',
         'BlancpainGT_2019.json',
         'WTCR_2019.json',
-        'NASCAR_2019.json',
         'WRC_2019.json',
         'MotoGP_2019.json',
         'AirRace_2019.json'
