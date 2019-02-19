@@ -46,7 +46,7 @@ const view = (state, actions) => (
         'MotoGP_2019.json',
         'AirRace_2019.json'
       ].map(d => 
-        axios.get(`https://y047aka.github.io/MotorSportsSchedules/${ d }`).catch(e => { console.log(e) })
+        axios.get(`https://y047aka.github.io/MotorSportsData/schedules/${ d }`).catch(e => { console.log(e) })
       ))
 
       actions.setCalender(calendars.map(d => d.data))
