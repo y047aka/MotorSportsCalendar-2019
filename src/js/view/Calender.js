@@ -29,6 +29,8 @@ const TableBody = series => state =>
             div({ innerHTML: `${ event.date }<br>${ event.name }` })
           ])
         ])
+      } else if (sunday < new Date()) {
+        return td({ class: 'past' }, '')
       } else {
         return td('')
       }

@@ -103,6 +103,8 @@ main {
           text-align: left;
           font-size: 1.5rem;
           background: #FFF; }
+        main table.heatmap tr td.past {
+          background: rgba(46, 77, 107, 0.4); }
         main table.heatmap tr td.raceweek {
           position: relative;
           background: #0066cc; }
