@@ -39,6 +39,7 @@ const view = (state, actions) => (
         'SuperGT_2019.json',
         'DTM_2019.json',
         'BlancpainGT_2019.json',
+        'IGTC_2019.json',
         'WTCR_2019.json',
         'WRC_2019.json',
         'MotoGP_2019.json',
