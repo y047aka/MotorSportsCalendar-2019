@@ -1,8 +1,4 @@
 {
-  "name": "y047aka.me",
-  "version": "0.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
     "echo:nojekyll": "touch ./docs/.nojekyll",
     "echo": "npm-run-all -p echo:nojekyll",
@@ -15,8 +11,6 @@
     "watch": "npm-run-all -p watch:*",
     "start": "npm-run-all -s echo copy watch"
   },
-  "author": "y047aka",
-  "license": "ISC",
   "dependencies": {
     "@hyperapp/html": "^1.1.1",
     "axios": "^0.18.0",
