@@ -21,6 +21,8 @@ const TableBody = series => state =>
         return (difference >= 0 && difference < 7 * (1000 * 60 * 60 * 24))
       })
 
+      const today = new Date()
+
       if (event) {
         return td({ class: 'raceweek' }, [
           label([
@@ -29,7 +31,7 @@ const TableBody = series => state =>
             div({ innerHTML: `${ event.date }<br>${ event.name }` })
           ])
         ])
-      } else if (sunday < new Date()) {
+      } else if (sunday < today.setDate(today.getDate() - 1)) {
         return td({ class: 'past' }, '')
       } else {
         return td('')
