@@ -1,18 +1,23 @@
 import Browser
---import Html exposing (Html, text, node, div, header, section, nav, footer, h1, h2, p, a, ul, li, img)
-import Html exposing (..)
+import Html exposing (Html, text, node, div, span, section, table, tbody, tr, th, td, label, input, br, button, p)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as Decode
 import Json.Decode.Pipeline exposing (required, optional, hardcoded)
+import Iso8601
+import Time exposing (Month(..), now)
+import Time.Extra as Time exposing (Interval(..))
+import Task
+
+import View
 
 main =
     Browser.element
         { init = init
         , update = update
         , view = view
-        , subscriptions = \_ -> Sub.none
+        , subscriptions = subscriptions
         }
 
 
@@ -20,6 +25,9 @@ main =
 
 type alias Model =
     { userState : UserState
+    , resultChunk : RaceCategories
+    , zone : Time.Zone
+    , time : Time.Posix
     }
 
 type UserState
@@ -29,19 +37,39 @@ type UserState
 
 init : () -> (Model, Cmd Msg)
 init _ =
-    ( Model Init
-    , ppp
+    ( Model Init [] Time.utc (Time.millisToPosix 0)
+    , qqq
     )
+
+type alias RaceCategory =
+    { seriesName : String
+    , season : String
+    , races : Races
+    }
+
+type alias RaceCategories =
+    List RaceCategory
 
 
 -- UPDATE
 
 type Msg
-    = Recieve (Result Http.Error Races)
+    = Tick Time.Posix
+    | GotServerResponse (Result Http.Error RaceCategories)
+    | Recieve (Result Http.Error Races)
 
 update : Msg -> Model -> (Model, Cmd Msg)
 update msg model =
     case msg of
+        Tick newTime ->
+            ( { model | time = newTime }, Cmd.none )
+
+        GotServerResponse (Ok categories) ->
+            ( { model | resultChunk = categories }, Cmd.none )
+        
+        GotServerResponse (Err error) ->
+            ( { model | resultChunk = [] }, Cmd.none )
+
         Recieve (Ok races) ->
             ( { model | userState = Loaded races }, Cmd.none )
         
@@ -49,12 +77,101 @@ update msg model =
             ( { model | userState = Failed error }, Cmd.none )
 
 
-ppp : Cmd Msg
-ppp =
-    Http.get
-        { url = "https://y047aka.github.io/MotorSportsData/schedules/F1_2019.json"
-        , expect = Http.expectJson Recieve racesDecoder
+qqq : Cmd Msg
+qqq =
+    let
+        getResultTask =
+            getTestServerResponseWithPageTask
+    in
+        Task.attempt GotServerResponse <|
+            (
+                [ "F1_2019.json"
+                , "FormulaE_2018-19.json"
+                , "WEC_2018-19.json"
+                , "WEC_2019-20.json"
+                , "IMSA_2019.json"
+                , "IndyCar_2019.json"
+                , "NASCAR_2019.json"
+                , "SuperFormula_2019.json"
+                , "SuperGT_2019.json"
+                , "DTM_2019.json"
+                , "BlancpainGT_2019.json"
+                , "IGTC_2019.json"
+                , "WTCR_2019.json"
+                , "SuperTaikyu_2019.json"
+                , "WRC_2019.json"
+                , "MotoGP_2019.json"
+                , "AirRace_2019.json"
+                ]
+                    |> List.map getResultTask
+                    |> Task.sequence
+            )
+
+getTestServerResponseWithPageTask : String -> Task.Task Http.Error RaceCategory
+getTestServerResponseWithPageTask category =
+    Http.task
+        { method = "GET"
+        , headers = []
+        , url = "https://y047aka.github.io/MotorSportsData/schedules/" ++ category
+        , body = Http.emptyBody
+        , resolver = jsonResolver responseDecoder
+        , timeout = Nothing
         }
+
+jsonResolver : Decode.Decoder a -> Http.Resolver Http.Error a
+jsonResolver decoder =
+    Http.stringResolver <|
+        \response ->
+            case response of
+                Http.BadUrl_ url ->
+                    Err (Http.BadUrl url)
+
+                Http.Timeout_ ->
+                    Err Http.Timeout
+
+                Http.NetworkError_ ->
+                    Err Http.NetworkError
+
+                Http.BadStatus_ metadata body ->
+                    Err (Http.BadStatus metadata.statusCode)
+
+                Http.GoodStatus_ metadata body ->
+                    case Decode.decodeString decoder body of
+                        Ok value ->
+                            Ok value
+
+                        Err err ->
+                            Err (Http.BadBody (Decode.errorToString err))
+
+
+responseDecoder : Decode.Decoder RaceCategory
+responseDecoder =
+    Decode.map3 RaceCategory
+        (Decode.field "seriesName" Decode.string)
+        (Decode.field "season" Decode.string)
+        (Decode.field "races" ( Decode.list raceDecoder ))
+
+-- Data
+type alias Race =
+    { posix : Time.Posix
+    , name : String
+    }
+
+type alias Races =
+    List Race
+
+raceDecoder : Decode.Decoder Race
+raceDecoder =
+    Decode.succeed Race
+        |> required "date" Iso8601.decoder
+        |> required "name" Decode.string
+
+
+
+-- SUBSCRIPTIONS
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Time.every 1000 Tick
 
 
 -- VIEW
@@ -62,139 +179,130 @@ ppp =
 view : Model -> Html Msg
 view model =
     div []
-        [ siteHeader
+        [ View.siteHeader
         , node "main" []
             [ section []
-                [ case model.userState of
-                    Init ->
-                        text ""
-                    
-                    Loaded races ->
-                        table [ class "heatmap" ]
-                            [ tr []
-                                [ th [] [ text "Pos" ]
-                                , th [] [ text "#" ]
+                [
+                    let
+                        utc = Time.utc
+                        start = Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
+                        until = start |> Time.add Year 1 utc
+                        sundays = Time.range Sunday 1 utc start until
+                    in
+                        div [] (model.resultChunk |> List.map (\d ->
+                            table [ class "heatmap" ]
+                                [ tableHeader sundays
+                                , tableBody d.seriesName sundays d.races model.time
                                 ]
-                            , tbody [] (List.map viewRaces races)
-                            ]
-                    
-                    Failed error ->
-                        div [] [ text (Debug.toString error) ]
+                        ))
                 ]
-            , links
-            , repositories
+--            , section []
+--                [ case model.userState of
+--                    Init ->
+--                        text ""
+--                    
+--                    Loaded races ->
+--                        let
+--                            utc = Time.utc
+--                            start = Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
+--                            until = start |> Time.add Year 1 utc
+--                            sundays = Time.range Sunday 1 utc start until
+--                        in
+--                            table [ class "heatmap" ]
+--                                [ tableHeader sundays
+--                                , tableBody sundays races model.time
+--                                ]
+--                    
+--                    Failed error ->
+--                        div [] [ text (Debug.toString error) ]
+--                ]
+            , View.links
+            , View.repositories
             ]
-        , siteFooter
+        , View.siteFooter
         ]
 
-viewRaces d =
+omissionMonth : Time.Month -> String
+omissionMonth month =
+    case month of
+        Jan -> "Jan"
+        Feb -> "Feb"
+        Mar -> "Mar"
+        Apr -> "Apr"
+        May -> "May"
+        Jun -> "Jun"
+        Jul -> "Jul"
+        Aug -> "Aug"
+        Sep -> "Sep"
+        Oct -> "Oct"
+        Nov -> "Nov"
+        Dec -> "Dec"
+
+tableHeader : List Time.Posix -> Html Msg
+tableHeader sundays =
     tr []
-        [ td [] [ text d.date ]
-        , td [] [ text d.name ]
-        ]
+        (th [] [] :: (sundays |> List.map (\posix ->
+            if Time.toDay Time.utc posix <= 7 then
+                th [] 
+                    [ span [] [ text (Time.toMonth Time.utc posix |> omissionMonth) ]
+                    ]
+            else
+                th [] []
+        )))
 
-siteHeader : Html Msg
-siteHeader =
-    Html.header [ class "site-header" ]
-        [ h1 [] [ text "Motor Sports Calendar 2019" ]
-        ]
+type Weekend
+    = Scheduled Race
+    | Free
+    | Past
 
-links : Html Msg
-links =
-    section []
-        [ h1 [] [ text "Links" ]
-        , h2 [] [ text "FIA" ]
-        , ul []
-            [ li []
-                [ a [ href "https://www.formula1.com/en/racing/2019.html", target "_blank" ]
-                    [ text "The complete 2019 F1 Championship calendar| Formula 1®" ]
-                ]
-            , li []
-                [ a [ href "https://www.fiawec.com/en/calendar/80", target "_blank" ]
-                    [ text "Calendar - FIA World Endurance Championship" ]
-                ]
-            , li []
-                [ a [ href "https://www.fiaformulae.com/en/championship/race-calendar", target "_blank" ]
-                    [ text "Race Calendar | FIA Formula E" ]
-                ]
-            , li []
-                [ a [ href "https://www.wrc.com/en/wrc/calendar/calendar/page/671-29772-16--.html", target "_blank" ]
-                    [ text "Rally Calendar Overview | WRC Start Dates | WRC Info - wrc.com" ]
-                ]
-            ]
-        , h2 [] [ text "FIM" ]
-        , ul []
-            [ li []
-                [ a [ href "http://www.motogp.com/en/calendar", target "_blank" ]
-                    [ text "MotoGP 2019 calendar - Circuits, the schedule and information about every Grand Prix | MotoGP™" ]
-                ]
-            ]
-        , h2 [] [ text "America" ]
-        , ul []
-            [ li []
-                [ a [ href "https://www.indycar.com/Schedule", target "_blank" ]
-                    [ text "Schedule - Verizon IndyCar Series, Indy Lights, Pro Mazda & Cooper Tires USF2000" ]
-                ]
-            , li []
-                [ a [ href "https://sportscarchampionship.imsa.com/schedule-results/race-schedule", target "_blank" ]
-                    [ text "Schedule | WeatherTech SportsCar Championship" ]
-                ]
-            , li []
-                [ a [ href "https://www.nascar.com/monster-energy-nascar-cup-series/2019/schedule/", target "_blank" ]
-                    [ text "2019 Monster Energy NASCAR Cup Series Schedule | NASCAR.com" ]
-                ]
-            ]
-        , h2 [] [ text "Japan" ]
-        , ul []
-            [ li []
-                [ a [ href "https://supergt.net/races", target "_blank" ]
-                    [ text "Races | SUPER GT OFFICIAL WEBSITE" ]
-                ]
-            , li []
-                [ a [ href "https://superformula.net/sf2/en/race2019/", target "_blank" ]
-                    [ text "Race Calendar 2019 | SUPER FORMULA Official Website" ]
-                ]
-            ]
-        ]
+isRaceWeek : Time.Posix -> Races -> Time.Posix -> Weekend
+isRaceWeek sundayPosix races currentPosix =
+    let
+        racesInThisWeek = races |> List.filter
+            (\raceday ->
+                let
+                    racedayPosix = raceday.posix
+                    diff = Time.diff Day Time.utc racedayPosix sundayPosix
+                in
+                    diff >= 0 && diff < 7
+            )
 
-repositories : Html Msg
-repositories =
-    section []
-        [ h1 [] [ text "Repositories" ]
-        , h2 [] [ text "Program:" ]
-        , a [ href "https://github.com/y047aka/MotorSportsCalendar", target "_blank" ] [ text "https://github.com/y047aka/MotorSportsCalendar" ]
-        , h2 [] [ text "Data:" ]
-        , a [ href "https://github.com/y047aka/MotorSportsData/tree/master/schedules", target "_blank" ] [ text "https://github.com/y047aka/MotorSportsData/schedules" ]
-        ]
+        isPast = Time.diff Day Time.utc sundayPosix currentPosix > 0
+    in
+        if List.length racesInThisWeek > 0 then
+            Scheduled (
+                racesInThisWeek
+                    |> List.reverse
+                    |> List.head
+                    |> Maybe.withDefault { name = "name", posix = Time.millisToPosix 0 }
+            )
+        else if isPast then
+            Past
+        else
+            Free
 
-siteFooter : Html Msg
-siteFooter =
-    footer [ class "site-footer" ]
-        [ p [ class "copyright"]
-            [ text "© 2019 "
-            , a [ href "https://y047aka.me", target "_blank" ] [ text "y047aka" ]
-            ]
-        ]
+tableBody : String -> List Time.Posix -> Races -> Time.Posix -> Html Msg
+tableBody seriesName sundays races currentPosix =
+    tr [] <|
+        td [] [ text seriesName ] :: (sundays |> List.map (\sundayPosix ->
+            case isRaceWeek sundayPosix races currentPosix of
+                Scheduled race ->
+                    td [ class "raceweek" ]
+                        [ label []
+                            [ span [] [ text (Time.toDay Time.utc sundayPosix |> String.fromInt) ]
+                            , input [ type_ "checkbox" ] []
+                            , div []
+                                [ text (race.posix |> Iso8601.fromTime |> String.left 10)
+                                , br [] []
+                                , text race.name
+                                ]
+                            ]
+                        ]
 
+                Free ->
+                    td [] []
 
--- HTTP
+                Past ->
+                    td [ class "past" ] []            
+        ))
 
-
--- Data
-type alias Race =
-    { date : String
-    , name : String
-    }
-
-type alias Races =
-    List Race
-
-race : Decode.Decoder Race
-race =
-    Decode.succeed Race
-        |> required "date" Decode.string
-        |> required "name" Decode.string
-
-racesDecoder : Decode.Decoder Races
-racesDecoder =
-    Decode.field "races" ( Decode.list race )
