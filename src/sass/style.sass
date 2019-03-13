@@ -14,8 +14,8 @@ html
 
 body
   font-size: 1.6rem
-  background: hsl(210, 40%, 30%)
-  color: #FFF
+  background: hsl(210, 100%, 80%)
+  color: hsl(210, 90%, 30%)
 
   & > div
     display: grid
@@ -45,7 +45,7 @@ body
       padding: 3rem 0
 
 a
-  color: hsl(210, 100%, 80%)
+  color: hsl(210, 90%, 40%)
   text-decoration: none
 
   &:hover
@@ -64,14 +64,14 @@ header.site-header
         content: ": "
 
 main
-  border-top: solid 0.5rem hsla(210, 40%, 30%, 0.05)
-  border-bottom: solid 0.5rem hsla(210, 40%, 30%, 0.05)
+  border-top: solid 0.5rem hsl(210, 90%, 78%)
+  border-bottom: solid 0.5rem hsl(210, 90%, 78%)
 
   section
     padding: 3rem 0 4rem
 
     & + section
-      border-top: solid 0.5rem hsla(210, 40%, 30%, 0.05)
+      border-top: solid 0.5rem hsl(210, 90%, 78%)
 
   h1
     padding: 1rem 0
@@ -112,12 +112,13 @@ main
           top: 2rem
           left: 0
           font-size: 1.1rem
+          color: hsl(210, 60%, 50%)
       
       td
         position: relative
         left: 0.1rem
         text-align: center
-        background: hsl(210, 40%, 35%)
+        background: hsl(210, 90%, 75%)
         border-radius: 0.2rem
 
         &:first-child
@@ -129,11 +130,11 @@ main
           background: inherit
 
         &.past
-          background: hsl(210, 40%, 50%)
+          background: hsl(210, 80%, 70%)
 
         &.raceweek
           position: relative
-          background: hsl(210, 40%, 100%)
+          background: hsl(210, 100%, 100%)
 
           label
             width: 100%
@@ -149,7 +150,8 @@ main
             right: 0
             bottom: 0
             margin: auto
-            color: hsl(210, 40, 30)
+            font-weight: 600
+            color: hsl(210, 100%, 50%)
 
             @media screen and (max-width: 479px)
               display: none
@@ -176,7 +178,7 @@ main
             background: hsl(40, 100%, 60%)
             color: hsl(210, 40%, 30%)
             border-radius: 0.3rem
-            box-shadow: 0 0 0 0.2rem hsl(210, 40%, 30%)
+            box-shadow: 0 0 0 0.2rem hsl(210, 100%, 80%)
 
             &::after
               content: ""
