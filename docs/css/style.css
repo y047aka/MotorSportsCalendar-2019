@@ -147,7 +147,7 @@ main {
             text-align: left;
             font-size: 1.4rem;
             line-height: 1.3;
-            background: #ffd24d;
+            background: #ffc44d;
             color: #36717d;
             border-radius: 0.3rem;
             box-shadow: 0 0 0 0.2rem #7dd6e8; }
@@ -160,7 +160,7 @@ main {
               width: 0;
               height: 0;
               border-style: solid;
-              border-color: transparent transparent #ffd24d transparent;
+              border-color: transparent transparent #ffc44d transparent;
               border-width: 0 0.8rem 0.8rem 0.8rem; }
           main table.heatmap tr td.raceweek input:checked + div {
             display: block; }
