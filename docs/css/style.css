@@ -15,7 +15,7 @@ html {
 
 body {
   font-size: 1.6rem;
-  background: #8cccd9;
+  background: #999;
   color: #FFF; }
   body > div {
     display: grid;
@@ -42,7 +42,7 @@ body {
       padding: 3rem 0; }
 
 a {
-  color: #265973;
+  color: #333;
   text-decoration: none; }
   a:hover {
     text-decoration: underline; }
@@ -56,12 +56,12 @@ header.site-header h1 {
       content: ": "; }
 
 main {
-  border-top: solid 0.5rem #9fd5df;
-  border-bottom: solid 0.5rem #9fd5df; }
+  border-top: solid 0.5rem #888;
+  border-bottom: solid 0.5rem #888; }
   main section {
     padding: 3rem 0 4rem; }
     main section + section {
-      border-top: solid 0.5rem #9fd5df; }
+      border-top: solid 0.5rem #888; }
   main h1 {
     padding: 1rem 0;
     font-size: 2.4rem; }
@@ -92,7 +92,7 @@ main {
           top: 2rem;
           left: 0;
           font-size: 1.1rem;
-          color: #337799; }
+          color: #666; }
       main table.heatmap tr td {
         position: relative;
         left: 0.1rem;
@@ -107,10 +107,10 @@ main {
           font-weight: 600;
           background: inherit; }
         main table.heatmap tr td.past {
-          background: #c2e8f0; }
+          background: #CCC; }
         main table.heatmap tr td.raceweek {
           position: relative;
-          background: #2d6886; }
+          background: #666; }
           main table.heatmap tr td.raceweek label {
             width: 100%;
             height: 100%; }
@@ -147,10 +147,10 @@ main {
             text-align: left;
             font-size: 1.4rem;
             line-height: 1.3;
-            background: #ffc44d;
-            color: #36717d;
+            background: #333;
+            color: #FFF;
             border-radius: 0.3rem;
-            box-shadow: 0 0 0 0.2rem #8cccd9; }
+            box-shadow: 0 0 0 0.2rem #999; }
             main table.heatmap tr td.raceweek div::after {
               content: "";
               position: absolute;
@@ -160,7 +160,7 @@ main {
               width: 0;
               height: 0;
               border-style: solid;
-              border-color: transparent transparent #ffc44d transparent;
+              border-color: transparent transparent #333 transparent;
               border-width: 0 0.8rem 0.8rem 0.8rem; }
           main table.heatmap tr td.raceweek input:checked + div {
             display: block; }
