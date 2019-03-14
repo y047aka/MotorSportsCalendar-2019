@@ -15,7 +15,7 @@ html {
 
 body {
   font-size: 1.6rem;
-  background: #7dd6e8;
+  background: #8cccd9;
   color: #FFF; }
   body > div {
     display: grid;
@@ -42,7 +42,7 @@ body {
       padding: 3rem 0; }
 
 a {
-  color: #177082;
+  color: #266673;
   text-decoration: none; }
   a:hover {
     text-decoration: underline; }
@@ -56,12 +56,12 @@ header.site-header h1 {
       content: ": "; }
 
 main {
-  border-top: solid 0.5rem #93ddec;
-  border-bottom: solid 0.5rem #93ddec; }
+  border-top: solid 0.5rem #9fd5df;
+  border-bottom: solid 0.5rem #9fd5df; }
   main section {
     padding: 3rem 0 4rem; }
     main section + section {
-      border-top: solid 0.5rem #93ddec; }
+      border-top: solid 0.5rem #9fd5df; }
   main h1 {
     padding: 1rem 0;
     font-size: 2.4rem; }
@@ -92,12 +92,12 @@ main {
           top: 2rem;
           left: 0;
           font-size: 1.1rem;
-          color: #1f96ad; }
+          color: #338899; }
       main table.heatmap tr td {
         position: relative;
         left: 0.1rem;
         text-align: center;
-        background: white;
+        background: #FFF;
         border-radius: 0.2rem; }
         main table.heatmap tr td:first-child {
           left: -0.2rem;
@@ -107,10 +107,10 @@ main {
           font-weight: 600;
           background: inherit; }
         main table.heatmap tr td.past {
-          background: #beebf4; }
+          background: #c6e6ec; }
         main table.heatmap tr td.raceweek {
           position: relative;
-          background: #1b8398; }
+          background: #2d7786; }
           main table.heatmap tr td.raceweek label {
             width: 100%;
             height: 100%; }
@@ -124,7 +124,7 @@ main {
             bottom: 0;
             margin: auto;
             font-weight: 600;
-            color: #e9f8fb; }
+            color: #ecf7f9; }
             @media screen and (max-width: 479px) {
               main table.heatmap tr td.raceweek span {
                 display: none; } }
@@ -150,7 +150,7 @@ main {
             background: #ffc44d;
             color: #36717d;
             border-radius: 0.3rem;
-            box-shadow: 0 0 0 0.2rem #7dd6e8; }
+            box-shadow: 0 0 0 0.2rem #8cccd9; }
             main table.heatmap tr td.raceweek div::after {
               content: "";
               position: absolute;
