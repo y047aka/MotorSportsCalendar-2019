@@ -13,36 +13,34 @@ html
   font-size: 62.5%
 
 body
+  display: grid
+  grid-template-rows: auto auto auto
   font-size: 1.6rem
   background: hsl(190, 50%, 70%)
   color: #FFF
 
-  & > div
-    display: grid
-    grid-template-rows: auto auto auto
+  @media screen and (max-width: 479px)
+    grid-template-columns: 1.5rem 1fr 1.5rem
 
-    @media screen and (max-width: 479px)
-      grid-template-columns: 1.5rem 1fr 1.5rem
+  @media screen and (min-width: 480px) and (max-width: 1279px)
+    grid-template-columns: 1fr 90% 1fr
 
-    @media screen and (min-width: 480px) and (max-width: 1279px)
-      grid-template-columns: 1fr 90% 1fr
+  @media screen and (min-width: 1280px)
+    grid-template-columns: 1fr 80% 1fr
 
-    @media screen and (min-width: 1280px)
-      grid-template-columns: 1fr 80% 1fr
+  & > header.site-header
+    grid-row: 1
+    grid-column: 2
+    padding: 3.5rem 0 3rem
 
-    & > header.site-header
-      grid-row: 1
-      grid-column: 2
-      padding: 3.5rem 0 3rem
+  & > main
+    grid-row: 2
+    grid-column: 2
 
-    & > main
-      grid-row: 2
-      grid-column: 2
-
-    & > footer.site-footer
-      grid-row: 3
-      grid-column: 2
-      padding: 3rem 0
+  & > footer.site-footer
+    grid-row: 3
+    grid-column: 2
+    padding: 3rem 0
 
 a
   color: hsl(200, 50%, 30%)

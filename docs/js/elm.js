@@ -8537,10 +8537,8 @@ var justinmimbs$time_extra$Time$Extra$range = F5(
 			A3(justinmimbs$time_extra$Time$Extra$ceiling, interval, zone, start));
 	});
 var author$project$Main$view = function (model) {
-	return A2(
-		elm$html$Html$div,
-		_List_Nil,
-		_List_fromArray(
+	return {
+		body: _List_fromArray(
 			[
 				author$project$View$siteHeader,
 				A3(
@@ -8587,7 +8585,9 @@ var author$project$Main$view = function (model) {
 						author$project$View$repositories
 					])),
 				author$project$View$siteFooter
-			]));
+			]),
+		title: 'MotorSportsCal'
+	};
 };
 var elm$browser$Browser$External = function (a) {
 	return {$: 'External', a: a};
@@ -8732,8 +8732,8 @@ var elm$url$Url$fromString = function (str) {
 		elm$url$Url$Https,
 		A2(elm$core$String$dropLeft, 8, str)) : elm$core$Maybe$Nothing);
 };
-var elm$browser$Browser$element = _Browser_element;
-var author$project$Main$main = elm$browser$Browser$element(
+var elm$browser$Browser$document = _Browser_document;
+var author$project$Main$main = elm$browser$Browser$document(
 	{init: author$project$Main$init, subscriptions: author$project$Main$subscriptions, update: author$project$Main$update, view: author$project$Main$view});
 _Platform_export({'Main':{'init':author$project$Main$main(
 	elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
