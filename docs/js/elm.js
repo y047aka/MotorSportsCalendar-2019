@@ -8586,7 +8586,7 @@ var author$project$Main$view = function (model) {
 					])),
 				author$project$View$siteFooter
 			]),
-		title: 'MotorSportsCal'
+		title: 'MotorSportsCalendar 2019'
 	};
 };
 var elm$browser$Browser$External = function (a) {

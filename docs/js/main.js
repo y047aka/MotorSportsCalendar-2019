@@ -1,5 +1,1 @@
-window.onload = () => {
-	Elm.Main.init({
-		node: document.getElementById('elm')
-	})
-}
+window.onload = () => { Elm.Main.init() }

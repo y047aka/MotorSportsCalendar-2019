@@ -200,7 +200,7 @@ subscriptions model =
 
 view : Model -> Browser.Document Msg
 view model =
-    { title = "MotorSportsCal"
+    { title = "MotorSportsCalendar 2019"
     , body =
         [ View.siteHeader
         , node "main"
