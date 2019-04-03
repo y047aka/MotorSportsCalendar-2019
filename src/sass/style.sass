@@ -26,7 +26,7 @@ body
     grid-template-columns: 1fr 90% 1fr
 
   @media screen and (min-width: 1280px)
-    grid-template-columns: 1fr 80% 1fr
+    grid-template-columns: 1fr 85% 1fr
 
   & > header.site-header
     grid-row: 1
@@ -93,29 +93,48 @@ main
       line-height: 2.6rem
 
   table.heatmap
-    display: grid
-    grid-template-rows: 3.4rem auto
-    grid-template-columns: 14rem 1fr
+
+    @media screen and (max-width: 479px)
+      display: grid
+      grid-template-columns: 100%
+      grid-template-rows: 2rem 1.8rem auto
+
+    @media screen and (min-width: 480px) and (max-width: 1279px)
+      display: grid
+      grid-template-columns: 100%
+      grid-template-rows: 2rem 1.8rem auto
+
+    @media screen and (min-width: 1280px)
+      display: grid
+      grid-template-columns: 14rem 1fr
+      grid-template-rows: 3.4rem auto
 
     caption
-      grid-row: 2
-      grid-column: 1
       text-align: left
       font-size: 1.4rem
       font-weight: 600
+      padding-top: 0.1rem
+
+      @media screen and (min-width: 1280px)
+        grid-row: 2
+        grid-column: 1
 
     tr
-      grid-column: 2
       display: grid
       grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr
       grid-column-gap: 0.15rem
 
+      @media screen and (min-width: 1280px)
+        grid-column: 2
+
       th
         position: relative
-        top: 2rem
         font-size: 1.1rem
         font-weight: normal
         color: hsl(200, 50%, 40%)
+
+        @media screen and (min-width: 1280px)
+          top: 2rem
       
       td
         text-align: center
