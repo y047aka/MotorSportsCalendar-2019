@@ -93,8 +93,19 @@ main
       line-height: 2.6rem
 
   table.heatmap
+    position: relative
     width: 100%
+    padding-left: 14rem
     border-spacing: 0.2rem
+
+    caption
+      position: absolute
+      top: 3.9rem
+      left: 0.1rem
+      width: 14rem
+      text-align: left
+      font-size: 1.4rem
+      font-weight: 600
 
     tr
       position: relative
@@ -115,17 +126,10 @@ main
       td
         position: relative
         left: 0.1rem
+        padding-top: 1.6rem
         text-align: center
         background: #FFF
         border-radius: 0.2rem
-
-        &:first-child
-          left: -0.2rem
-          width: 14rem
-          text-align: left
-          font-size: 1.4rem
-          font-weight: 600
-          background: inherit
 
         &.past
           background: hsl(190, 60%, 85%)

@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, br, button, div, input, label, node, p, section, span, table, tbody, td, text, th, tr)
+import Html exposing (Html, br, button, caption, div, input, label, node, p, section, span, table, tbody, td, text, th, tr)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
@@ -224,7 +224,8 @@ view model =
                         |> List.map
                             (\d ->
                                 table [ class "heatmap" ]
-                                    [ tableHeader sundays
+                                    [ caption [] [ text d.seriesName ]
+                                    , tableHeader sundays
                                     , tableBody d.seriesName sundays d.races model.time
                                     ]
                             )
@@ -302,19 +303,17 @@ omissionMonth month =
 tableHeader : List Time.Posix -> Html Msg
 tableHeader sundays =
     tr []
-        (th [] []
-            :: (sundays
-                    |> List.map
-                        (\posix ->
-                            if Time.toDay Time.utc posix <= 7 then
-                                th []
-                                    [ span [] [ text (Time.toMonth Time.utc posix |> omissionMonth) ]
-                                    ]
+        (sundays
+            |> List.map
+                (\posix ->
+                    if Time.toDay Time.utc posix <= 7 then
+                        th []
+                            [ span [] [ text (Time.toMonth Time.utc posix |> omissionMonth) ]
+                            ]
 
-                            else
-                                th [] []
-                        )
-               )
+                    else
+                        th [] []
+                )
         )
 
 
@@ -361,29 +360,28 @@ isRaceWeek sundayPosix races currentPosix =
 
 tableBody : String -> List Time.Posix -> Races -> Time.Posix -> Html Msg
 tableBody seriesName sundays races currentPosix =
-    tr [] <|
-        td [] [ text seriesName ]
-            :: (sundays
-                    |> List.map
-                        (\sundayPosix ->
-                            case isRaceWeek sundayPosix races currentPosix of
-                                Scheduled race ->
-                                    td [ class "raceweek" ]
-                                        [ label []
-                                            [ span [] [ text (Time.toDay Time.utc sundayPosix |> String.fromInt) ]
-                                            , input [ type_ "checkbox" ] []
-                                            , div []
-                                                [ text (race.posix |> Iso8601.fromTime |> String.left 10)
-                                                , br [] []
-                                                , text race.name
-                                                ]
-                                            ]
+    tr []
+        (sundays
+            |> List.map
+                (\sundayPosix ->
+                    case isRaceWeek sundayPosix races currentPosix of
+                        Scheduled race ->
+                            td [ class "raceweek" ]
+                                [ label []
+                                    [ span [] [ text (Time.toDay Time.utc sundayPosix |> String.fromInt) ]
+                                    , input [ type_ "checkbox" ] []
+                                    , div []
+                                        [ text (race.posix |> Iso8601.fromTime |> String.left 10)
+                                        , br [] []
+                                        , text race.name
                                         ]
+                                    ]
+                                ]
 
-                                Free ->
-                                    td [] []
+                        Free ->
+                            td [] []
 
-                                Past ->
-                                    td [ class "past" ] []
-                        )
-               )
+                        Past ->
+                            td [ class "past" ] []
+                )
+        )

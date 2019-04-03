@@ -7851,78 +7851,69 @@ var author$project$Main$tableBody = F4(
 			elm$html$Html$tr,
 			_List_Nil,
 			A2(
-				elm$core$List$cons,
-				A2(
-					elm$html$Html$td,
-					_List_Nil,
-					_List_fromArray(
-						[
-							elm$html$Html$text(seriesName)
-						])),
-				A2(
-					elm$core$List$map,
-					function (sundayPosix) {
-						var _n0 = A3(author$project$Main$isRaceWeek, sundayPosix, races, currentPosix);
-						switch (_n0.$) {
-							case 'Scheduled':
-								var race = _n0.a;
-								return A2(
-									elm$html$Html$td,
-									_List_fromArray(
-										[
-											elm$html$Html$Attributes$class('raceweek')
-										]),
-									_List_fromArray(
-										[
-											A2(
-											elm$html$Html$label,
-											_List_Nil,
-											_List_fromArray(
-												[
-													A2(
-													elm$html$Html$span,
-													_List_Nil,
-													_List_fromArray(
-														[
-															elm$html$Html$text(
-															elm$core$String$fromInt(
-																A2(elm$time$Time$toDay, elm$time$Time$utc, sundayPosix)))
-														])),
-													A2(
-													elm$html$Html$input,
-													_List_fromArray(
-														[
-															elm$html$Html$Attributes$type_('checkbox')
-														]),
-													_List_Nil),
-													A2(
-													elm$html$Html$div,
-													_List_Nil,
-													_List_fromArray(
-														[
-															elm$html$Html$text(
-															A2(
-																elm$core$String$left,
-																10,
-																rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime(race.posix))),
-															A2(elm$html$Html$br, _List_Nil, _List_Nil),
-															elm$html$Html$text(race.name)
-														]))
-												]))
-										]));
-							case 'Free':
-								return A2(elm$html$Html$td, _List_Nil, _List_Nil);
-							default:
-								return A2(
-									elm$html$Html$td,
-									_List_fromArray(
-										[
-											elm$html$Html$Attributes$class('past')
-										]),
-									_List_Nil);
-						}
-					},
-					sundays)));
+				elm$core$List$map,
+				function (sundayPosix) {
+					var _n0 = A3(author$project$Main$isRaceWeek, sundayPosix, races, currentPosix);
+					switch (_n0.$) {
+						case 'Scheduled':
+							var race = _n0.a;
+							return A2(
+								elm$html$Html$td,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('raceweek')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$label,
+										_List_Nil,
+										_List_fromArray(
+											[
+												A2(
+												elm$html$Html$span,
+												_List_Nil,
+												_List_fromArray(
+													[
+														elm$html$Html$text(
+														elm$core$String$fromInt(
+															A2(elm$time$Time$toDay, elm$time$Time$utc, sundayPosix)))
+													])),
+												A2(
+												elm$html$Html$input,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$type_('checkbox')
+													]),
+												_List_Nil),
+												A2(
+												elm$html$Html$div,
+												_List_Nil,
+												_List_fromArray(
+													[
+														elm$html$Html$text(
+														A2(
+															elm$core$String$left,
+															10,
+															rtfeldman$elm_iso8601_date_strings$Iso8601$fromTime(race.posix))),
+														A2(elm$html$Html$br, _List_Nil, _List_Nil),
+														elm$html$Html$text(race.name)
+													]))
+											]))
+									]));
+						case 'Free':
+							return A2(elm$html$Html$td, _List_Nil, _List_Nil);
+						default:
+							return A2(
+								elm$html$Html$td,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('past')
+									]),
+								_List_Nil);
+					}
+				},
+				sundays));
 	});
 var author$project$Main$omissionMonth = function (month) {
 	switch (month.$) {
@@ -7958,28 +7949,25 @@ var author$project$Main$tableHeader = function (sundays) {
 		elm$html$Html$tr,
 		_List_Nil,
 		A2(
-			elm$core$List$cons,
-			A2(elm$html$Html$th, _List_Nil, _List_Nil),
-			A2(
-				elm$core$List$map,
-				function (posix) {
-					return (A2(elm$time$Time$toDay, elm$time$Time$utc, posix) <= 7) ? A2(
-						elm$html$Html$th,
-						_List_Nil,
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$span,
-								_List_Nil,
-								_List_fromArray(
-									[
-										elm$html$Html$text(
-										author$project$Main$omissionMonth(
-											A2(elm$time$Time$toMonth, elm$time$Time$utc, posix)))
-									]))
-							])) : A2(elm$html$Html$th, _List_Nil, _List_Nil);
-				},
-				sundays)));
+			elm$core$List$map,
+			function (posix) {
+				return (A2(elm$time$Time$toDay, elm$time$Time$utc, posix) <= 7) ? A2(
+					elm$html$Html$th,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$span,
+							_List_Nil,
+							_List_fromArray(
+								[
+									elm$html$Html$text(
+									author$project$Main$omissionMonth(
+										A2(elm$time$Time$toMonth, elm$time$Time$utc, posix)))
+								]))
+						])) : A2(elm$html$Html$th, _List_Nil, _List_Nil);
+			},
+			sundays));
 };
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -8327,6 +8315,7 @@ var author$project$View$siteHeader = A2(
 					elm$html$Html$text('Motor Sports Calendar 2019')
 				]))
 		]));
+var elm$html$Html$caption = _VirtualDom_node('caption');
 var elm$virtual_dom$VirtualDom$node = function (tag) {
 	return _VirtualDom_node(
 		_VirtualDom_noScript(tag));
@@ -8574,6 +8563,13 @@ var author$project$Main$view = function (model) {
 													]),
 												_List_fromArray(
 													[
+														A2(
+														elm$html$Html$caption,
+														_List_Nil,
+														_List_fromArray(
+															[
+																elm$html$Html$text(d.seriesName)
+															])),
 														author$project$Main$tableHeader(sundays),
 														A4(author$project$Main$tableBody, d.seriesName, sundays, d.races, model.time)
 													]));

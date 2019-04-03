@@ -77,8 +77,18 @@ main {
     main ul li {
       line-height: 2.6rem; }
   main table.heatmap {
+    position: relative;
     width: 100%;
+    padding-left: 14rem;
     border-spacing: 0.2rem; }
+    main table.heatmap caption {
+      position: absolute;
+      top: 3.9rem;
+      left: 0.1rem;
+      width: 14rem;
+      text-align: left;
+      font-size: 1.4rem;
+      font-weight: 600; }
     main table.heatmap tr {
       position: relative; }
       main table.heatmap tr th {
@@ -95,16 +105,10 @@ main {
       main table.heatmap tr td {
         position: relative;
         left: 0.1rem;
+        padding-top: 1.6rem;
         text-align: center;
         background: #FFF;
         border-radius: 0.2rem; }
-        main table.heatmap tr td:first-child {
-          left: -0.2rem;
-          width: 14rem;
-          text-align: left;
-          font-size: 1.4rem;
-          font-weight: 600;
-          background: inherit; }
         main table.heatmap tr td.past {
           background: #c2e8f0; }
         main table.heatmap tr td.raceweek {
