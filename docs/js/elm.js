@@ -7742,7 +7742,6 @@ var elm$html$Html$br = _VirtualDom_node('br');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$input = _VirtualDom_node('input');
 var elm$html$Html$label = _VirtualDom_node('label');
-var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$td = _VirtualDom_node('td');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
@@ -7870,15 +7869,9 @@ var author$project$Main$tableBody = F4(
 										_List_Nil,
 										_List_fromArray(
 											[
-												A2(
-												elm$html$Html$span,
-												_List_Nil,
-												_List_fromArray(
-													[
-														elm$html$Html$text(
-														elm$core$String$fromInt(
-															A2(elm$time$Time$toDay, elm$time$Time$utc, sundayPosix)))
-													])),
+												elm$html$Html$text(
+												elm$core$String$fromInt(
+													A2(elm$time$Time$toDay, elm$time$Time$utc, sundayPosix))),
 												A2(
 												elm$html$Html$input,
 												_List_fromArray(
@@ -7956,15 +7949,9 @@ var author$project$Main$tableHeader = function (sundays) {
 					_List_Nil,
 					_List_fromArray(
 						[
-							A2(
-							elm$html$Html$span,
-							_List_Nil,
-							_List_fromArray(
-								[
-									elm$html$Html$text(
-									author$project$Main$omissionMonth(
-										A2(elm$time$Time$toMonth, elm$time$Time$utc, posix)))
-								]))
+							elm$html$Html$text(
+							author$project$Main$omissionMonth(
+								A2(elm$time$Time$toMonth, elm$time$Time$utc, posix)))
 						])) : A2(elm$html$Html$th, _List_Nil, _List_Nil);
 			},
 			sundays));

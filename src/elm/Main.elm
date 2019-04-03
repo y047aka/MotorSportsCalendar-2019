@@ -308,8 +308,7 @@ tableHeader sundays =
                 (\posix ->
                     if Time.toDay Time.utc posix <= 7 then
                         th []
-                            [ span [] [ text (Time.toMonth Time.utc posix |> omissionMonth) ]
-                            ]
+                            [ text (Time.toMonth Time.utc posix |> omissionMonth) ]
 
                     else
                         th [] []
@@ -368,7 +367,7 @@ tableBody seriesName sundays races currentPosix =
                         Scheduled race ->
                             td [ class "raceweek" ]
                                 [ label []
-                                    [ span [] [ text (Time.toDay Time.utc sundayPosix |> String.fromInt) ]
+                                    [ text (Time.toDay Time.utc sundayPosix |> String.fromInt)
                                     , input [ type_ "checkbox" ] []
                                     , div []
                                         [ text (race.posix |> Iso8601.fromTime |> String.left 10)
