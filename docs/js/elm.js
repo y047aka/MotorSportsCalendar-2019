@@ -7959,6 +7959,7 @@ var author$project$Main$tableHeader = function (sundays) {
 var elm$html$Html$a = _VirtualDom_node('a');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$h2 = _VirtualDom_node('h2');
+var elm$html$Html$h3 = _VirtualDom_node('h3');
 var elm$html$Html$li = _VirtualDom_node('li');
 var elm$html$Html$section = _VirtualDom_node('section');
 var elm$html$Html$ul = _VirtualDom_node('ul');
@@ -8007,7 +8008,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('The complete 2019 F1 Championship calendar| Formula 1®')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Formula 1')
+										])),
+									elm$html$Html$text('The complete 2019 F1 Championship calendar')
 								]))
 						])),
 					A2(
@@ -8024,7 +8032,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Calendar - FIA World Endurance Championship')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('FIA World Endurance Championship')
+										])),
+									elm$html$Html$text('Calendar')
 								]))
 						])),
 					A2(
@@ -8041,7 +8056,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Race Calendar | FIA Formula E')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('FIA Formula E')
+										])),
+									elm$html$Html$text('Race Calendar')
 								]))
 						])),
 					A2(
@@ -8058,7 +8080,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Rally Calendar Overview | WRC Start Dates | WRC Info - wrc.com')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('WRC')
+										])),
+									elm$html$Html$text('Rally Calendar Overview | WRC Start Dates | WRC Info')
 								]))
 						]))
 				])),
@@ -8088,7 +8117,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('MotoGP 2019 calendar - Circuits, the schedule and information about every Grand Prix | MotoGP™')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('MotoGP')
+										])),
+									elm$html$Html$text('MotoGP 2019 calendar')
 								]))
 						]))
 				])),
@@ -8118,7 +8154,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Schedule - Verizon IndyCar Series, Indy Lights, Pro Mazda & Cooper Tires USF2000')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('IndyCar')
+										])),
+									elm$html$Html$text('Schedule')
 								]))
 						])),
 					A2(
@@ -8135,7 +8178,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Schedule | WeatherTech SportsCar Championship')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('IMSA WSCC')
+										])),
+									elm$html$Html$text('Schedule')
 								]))
 						])),
 					A2(
@@ -8152,7 +8202,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('2019 Monster Energy NASCAR Cup Series Schedule | NASCAR.com')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('NASCAR')
+										])),
+									elm$html$Html$text('2019 Monster Energy NASCAR Cup Series Schedule')
 								]))
 						]))
 				])),
@@ -8182,7 +8239,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Races | SUPER GT OFFICIAL WEBSITE')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('SUPER GT')
+										])),
+									elm$html$Html$text('Races')
 								]))
 						])),
 					A2(
@@ -8199,7 +8263,14 @@ var author$project$View$links = A2(
 								]),
 							_List_fromArray(
 								[
-									elm$html$Html$text('Race Calendar 2019 | SUPER FORMULA Official Website')
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('SUPER FORMULA')
+										])),
+									elm$html$Html$text('Race Calendar 2019')
 								]))
 						]))
 				]))
@@ -8217,40 +8288,58 @@ var author$project$View$repositories = A2(
 					elm$html$Html$text('Repositories')
 				])),
 			A2(
-			elm$html$Html$h2,
+			elm$html$Html$ul,
 			_List_Nil,
 			_List_fromArray(
 				[
-					elm$html$Html$text('Program:')
-				])),
-			A2(
-			elm$html$Html$a,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$href('https://github.com/y047aka/MotorSportsCalendar'),
-					elm$html$Html$Attributes$target('_blank')
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text('https://github.com/y047aka/MotorSportsCalendar')
-				])),
-			A2(
-			elm$html$Html$h2,
-			_List_Nil,
-			_List_fromArray(
-				[
-					elm$html$Html$text('Data:')
-				])),
-			A2(
-			elm$html$Html$a,
-			_List_fromArray(
-				[
-					elm$html$Html$Attributes$href('https://github.com/y047aka/MotorSportsData/tree/master/schedules'),
-					elm$html$Html$Attributes$target('_blank')
-				]),
-			_List_fromArray(
-				[
-					elm$html$Html$text('https://github.com/y047aka/MotorSportsData/schedules')
+					A2(
+					elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$a,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$href('https://github.com/y047aka/MotorSportsCalendar'),
+									elm$html$Html$Attributes$target('_blank')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Program')
+										])),
+									elm$html$Html$text('https://github.com/y047aka/MotorSportsCalendar')
+								]))
+						])),
+					A2(
+					elm$html$Html$li,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							elm$html$Html$a,
+							_List_fromArray(
+								[
+									elm$html$Html$Attributes$href('https://github.com/y047aka/MotorSportsData/tree/master/schedules'),
+									elm$html$Html$Attributes$target('_blank')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									elm$html$Html$h3,
+									_List_Nil,
+									_List_fromArray(
+										[
+											elm$html$Html$text('Data')
+										])),
+									elm$html$Html$text('https://github.com/y047aka/MotorSportsData/schedules')
+								]))
+						]))
 				]))
 		]));
 var elm$html$Html$footer = _VirtualDom_node('footer');
