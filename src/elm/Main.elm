@@ -99,6 +99,7 @@ qqq =
          , "FormulaE_2018-19.json"
          , "WEC_2018-19.json"
          , "WEC_2019-20.json"
+         , "ELMS_2019.json"
          , "IMSA_2019.json"
          , "IndyCar_2019.json"
          , "NASCAR_2019.json"
