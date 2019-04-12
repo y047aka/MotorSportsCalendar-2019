@@ -38,7 +38,7 @@ links =
             , li []
                 [ a [ href "https://www.wrc.com/en/wrc/calendar/calendar/page/671-29772-16--.html", target "_blank" ]
                     [ h3 [] [ text "WRC" ]
-                    , text "Rally Calendar Overview | WRC Start Dates | WRC Info"
+                    , text "Rally Calendar Overview"
                     ]
                 ]
             ]

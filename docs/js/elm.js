@@ -8087,7 +8087,7 @@ var author$project$View$links = A2(
 										[
 											elm$html$Html$text('WRC')
 										])),
-									elm$html$Html$text('Rally Calendar Overview | WRC Start Dates | WRC Info')
+									elm$html$Html$text('Rally Calendar Overview')
 								]))
 						]))
 				])),
