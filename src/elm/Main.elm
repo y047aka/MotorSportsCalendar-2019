@@ -6,8 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Iso8601
-import Json.Decode as Decode
-import Json.Decode.Pipeline exposing (hardcoded, optional, required)
+import Races exposing (Race, RaceCategory, getTestServerResponseWithPageTask)
 import Task
 import Time exposing (Month(..), now)
 import Time.Extra as Time exposing (Interval(..))
@@ -29,7 +28,7 @@ main =
 
 type alias Model =
     { userState : UserState
-    , resultChunk : RaceCategories
+    , resultChunk : List RaceCategory
     , zone : Time.Zone
     , time : Time.Posix
     }
@@ -37,7 +36,7 @@ type alias Model =
 
 type UserState
     = Init
-    | Loaded Races
+    | Loaded (List Race)
     | Failed Http.Error
 
 
@@ -48,25 +47,14 @@ init _ =
     )
 
 
-type alias RaceCategory =
-    { seriesName : String
-    , season : String
-    , races : Races
-    }
-
-
-type alias RaceCategories =
-    List RaceCategory
-
-
 
 -- UPDATE
 
 
 type Msg
     = Tick Time.Posix
-    | GotServerResponse (Result Http.Error RaceCategories)
-    | Recieve (Result Http.Error Races)
+    | GotServerResponse (Result Http.Error (List RaceCategory))
+    | Recieve (Result Http.Error (List Race))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -117,73 +105,6 @@ qqq =
             |> List.map getResultTask
             |> Task.sequence
         )
-
-
-getTestServerResponseWithPageTask : String -> Task.Task Http.Error RaceCategory
-getTestServerResponseWithPageTask category =
-    Http.task
-        { method = "GET"
-        , headers = []
-        , url = "https://y047aka.github.io/MotorSportsData/schedules/" ++ category
-        , body = Http.emptyBody
-        , resolver = jsonResolver responseDecoder
-        , timeout = Nothing
-        }
-
-
-jsonResolver : Decode.Decoder a -> Http.Resolver Http.Error a
-jsonResolver decoder =
-    Http.stringResolver <|
-        \response ->
-            case response of
-                Http.BadUrl_ url ->
-                    Err (Http.BadUrl url)
-
-                Http.Timeout_ ->
-                    Err Http.Timeout
-
-                Http.NetworkError_ ->
-                    Err Http.NetworkError
-
-                Http.BadStatus_ metadata body ->
-                    Err (Http.BadStatus metadata.statusCode)
-
-                Http.GoodStatus_ metadata body ->
-                    case Decode.decodeString decoder body of
-                        Ok value ->
-                            Ok value
-
-                        Err err ->
-                            Err (Http.BadBody (Decode.errorToString err))
-
-
-responseDecoder : Decode.Decoder RaceCategory
-responseDecoder =
-    Decode.map3 RaceCategory
-        (Decode.field "seriesName" Decode.string)
-        (Decode.field "season" Decode.string)
-        (Decode.field "races" (Decode.list raceDecoder))
-
-
-
--- Data
-
-
-type alias Race =
-    { posix : Time.Posix
-    , name : String
-    }
-
-
-type alias Races =
-    List Race
-
-
-raceDecoder : Decode.Decoder Race
-raceDecoder =
-    Decode.succeed Race
-        |> required "date" Iso8601.decoder
-        |> required "name" Decode.string
 
 
 
@@ -323,7 +244,7 @@ type Weekend
     | Past
 
 
-isRaceWeek : Time.Posix -> Races -> Time.Posix -> Weekend
+isRaceWeek : Time.Posix -> List Race -> Time.Posix -> Weekend
 isRaceWeek sundayPosix races currentPosix =
     let
         racesInThisWeek =
@@ -358,7 +279,7 @@ isRaceWeek sundayPosix races currentPosix =
         Free
 
 
-tableBody : String -> List Time.Posix -> Races -> Time.Posix -> Html Msg
+tableBody : String -> List Time.Posix -> List Race -> Time.Posix -> Html Msg
 tableBody seriesName sundays races currentPosix =
     tr []
         (sundays

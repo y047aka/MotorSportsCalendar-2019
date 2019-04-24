@@ -5751,7 +5751,7 @@ var elm$http$Http$Sending = function (a) {
 var elm$http$Http$Timeout_ = {$: 'Timeout_'};
 var elm$http$Http$stringResolver = A2(_Http_expect, '', elm$core$Basics$identity);
 var elm$json$Json$Decode$decodeString = _Json_runOnString;
-var author$project$Main$jsonResolver = function (decoder) {
+var author$project$Races$jsonResolver = function (decoder) {
 	return elm$http$Http$stringResolver(
 		function (response) {
 			switch (response.$) {
@@ -5784,7 +5784,7 @@ var author$project$Main$jsonResolver = function (decoder) {
 			}
 		});
 };
-var author$project$Main$RaceCategory = F3(
+var author$project$Races$RaceCategory = F3(
 	function (seriesName, season, races) {
 		return {races: races, season: season, seriesName: seriesName};
 	});
@@ -5798,7 +5798,7 @@ var NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2(elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var author$project$Main$Race = F2(
+var author$project$Races$Race = F2(
 	function (posix, name) {
 		return {name: name, posix: posix};
 	});
@@ -6512,7 +6512,7 @@ var rtfeldman$elm_iso8601_date_strings$Iso8601$decoder = A2(
 		}
 	},
 	elm$json$Json$Decode$string);
-var author$project$Main$raceDecoder = A3(
+var author$project$Races$raceDecoder = A3(
 	NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'name',
 	elm$json$Json$Decode$string,
@@ -6520,18 +6520,18 @@ var author$project$Main$raceDecoder = A3(
 		NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 		'date',
 		rtfeldman$elm_iso8601_date_strings$Iso8601$decoder,
-		elm$json$Json$Decode$succeed(author$project$Main$Race)));
+		elm$json$Json$Decode$succeed(author$project$Races$Race)));
 var elm$json$Json$Decode$list = _Json_decodeList;
 var elm$json$Json$Decode$map3 = _Json_map3;
-var author$project$Main$responseDecoder = A4(
+var author$project$Races$raceCategoryDecoder = A4(
 	elm$json$Json$Decode$map3,
-	author$project$Main$RaceCategory,
+	author$project$Races$RaceCategory,
 	A2(elm$json$Json$Decode$field, 'seriesName', elm$json$Json$Decode$string),
 	A2(elm$json$Json$Decode$field, 'season', elm$json$Json$Decode$string),
 	A2(
 		elm$json$Json$Decode$field,
 		'races',
-		elm$json$Json$Decode$list(author$project$Main$raceDecoder)));
+		elm$json$Json$Decode$list(author$project$Races$raceDecoder)));
 var elm$http$Http$emptyBody = _Http_emptyBody;
 var elm$core$Task$fail = _Scheduler_fail;
 var elm$core$Task$succeed = _Scheduler_succeed;
@@ -6551,13 +6551,13 @@ var elm$http$Http$task = function (r) {
 		elm$http$Http$resultToTask,
 		{allowCookiesFromOtherDomains: false, body: r.body, expect: r.resolver, headers: r.headers, method: r.method, timeout: r.timeout, tracker: elm$core$Maybe$Nothing, url: r.url});
 };
-var author$project$Main$getTestServerResponseWithPageTask = function (category) {
+var author$project$Races$getTestServerResponseWithPageTask = function (category) {
 	return elm$http$Http$task(
 		{
 			body: elm$http$Http$emptyBody,
 			headers: _List_Nil,
 			method: 'GET',
-			resolver: author$project$Main$jsonResolver(author$project$Main$responseDecoder),
+			resolver: author$project$Races$jsonResolver(author$project$Races$raceCategoryDecoder),
 			timeout: elm$core$Maybe$Nothing,
 			url: 'https://y047aka.github.io/MotorSportsData/schedules/' + category
 		});
@@ -6658,7 +6658,7 @@ var elm$core$Task$attempt = F2(
 						task))));
 	});
 var author$project$Main$qqq = function () {
-	var getResultTask = author$project$Main$getTestServerResponseWithPageTask;
+	var getResultTask = author$project$Races$getTestServerResponseWithPageTask;
 	return A2(
 		elm$core$Task$attempt,
 		author$project$Main$GotServerResponse,
