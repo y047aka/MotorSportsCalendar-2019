@@ -6,3 +6,6 @@ elm-stuff
 
 # Default directory at "npm start"
 docs
+
+# Default directory at "npm run build"
+public
