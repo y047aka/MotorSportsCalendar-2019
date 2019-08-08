@@ -1,14 +1,13 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, br, button, caption, div, input, label, node, p, section, span, table, tbody, td, text, th, tr)
-import Html.Attributes exposing (..)
-import Html.Events exposing (..)
+import Html exposing (Html, br, caption, div, input, label, node, section, table, td, text, th, tr)
+import Html.Attributes exposing (class, type_)
 import Http
 import Iso8601
 import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
 import Task
-import Time exposing (Month(..), now)
+import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
 import View
 
@@ -27,22 +26,21 @@ main =
 
 
 type alias Model =
-    { userState : UserState
-    , resultChunk : List RaceCategory
+    { raceCategories : List RaceCategory
     , zone : Time.Zone
     , time : Time.Posix
     }
 
 
-type UserState
-    = Init
-    | Loaded (List Race)
-    | Failed Http.Error
+type Weekend
+    = Scheduled Race
+    | Free
+    | Past
 
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model Init [] Time.utc (Time.millisToPosix 0)
+    ( Model [] Time.utc (Time.millisToPosix 0)
     , getServerResponse
     )
 
@@ -54,7 +52,6 @@ init _ =
 type Msg
     = Tick Time.Posix
     | GotServerResponse (Result Http.Error (List RaceCategory))
-    | Recieve (Result Http.Error (List Race))
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -64,22 +61,16 @@ update msg model =
             ( { model | time = newTime }, Cmd.none )
 
         GotServerResponse (Ok categories) ->
-            ( { model | resultChunk = categories }, Cmd.none )
+            ( { model | raceCategories = categories }, Cmd.none )
 
         GotServerResponse (Err error) ->
-            ( { model | resultChunk = [] }, Cmd.none )
-
-        Recieve (Ok races) ->
-            ( { model | userState = Loaded races }, Cmd.none )
-
-        Recieve (Err error) ->
-            ( { model | userState = Failed error }, Cmd.none )
+            ( { model | raceCategories = [] }, Cmd.none )
 
 
 getServerResponse : Cmd Msg
 getServerResponse =
     let
-        categories =
+        list =
             [ { category = "F1", season = "2019" }
             , { category = "FormulaE", season = "2018-19" }
             , { category = "WEC", season = "2018-19" }
@@ -104,7 +95,7 @@ getServerResponse =
             "https://y047aka.github.io/MotorSportsData/schedules/"
                 ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
     in
-    categories
+    list
         |> List.map (filePathFromItem >> getServerResponseWithCategoryTask)
         |> Task.sequence
         |> Task.attempt GotServerResponse
@@ -125,6 +116,21 @@ subscriptions model =
 
 view : Model -> Browser.Document Msg
 view model =
+    { title = "MotorSportsCalendar 2019"
+    , body =
+        [ View.siteHeader
+        , node "main"
+            []
+            [ viewHeatMap model
+            , View.links
+            ]
+        , View.siteFooter
+        ]
+    }
+
+
+viewHeatMap : Model -> Html Msg
+viewHeatMap model =
     let
         utc =
             Time.utc
@@ -138,54 +144,22 @@ view model =
         sundays =
             Time.range Sunday 1 utc start until
     in
-    { title = "MotorSportsCalendar 2019"
-    , body =
-        [ View.siteHeader
-        , node "main"
-            []
-            [ section []
-                [ div []
-                    (model.resultChunk
-                        |> List.map
-                            (\d ->
-                                table [ class "heatmap" ]
-                                    [ caption [] [ text d.seriesName ]
-                                    , tableHeader sundays
-                                    , tableBody d.seriesName sundays d.races model.time
-                                    ]
-                            )
-                    )
-                ]
-
-            --            , section []
-            --                [ case model.userState of
-            --                    Init ->
-            --                        text ""
-            --
-            --                    Loaded races ->
-            --                        let
-            --                            utc = Time.utc
-            --                            start = Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
-            --                            until = start |> Time.add Year 1 utc
-            --                            sundays = Time.range Sunday 1 utc start until
-            --                        in
-            --                            table [ class "heatmap" ]
-            --                                [ tableHeader sundays
-            --                                , tableBody sundays races model.time
-            --                                ]
-            --
-            --                    Failed error ->
-            --                        div [] [ text (Debug.toString error) ]
-            --                ]
-            , View.links
-            ]
-        , View.siteFooter
-        ]
-    }
+    section []
+        (model.raceCategories
+            |> List.map
+                (\series ->
+                    table
+                        [ class "heatmap" ]
+                        [ caption [] [ text series.seriesName ]
+                        , viewTicks sundays
+                        , viewRaces sundays series.races model.time
+                        ]
+                )
+        )
 
 
-omissionMonth : Time.Month -> String
-omissionMonth month =
+stringFromMonth : Time.Month -> String
+stringFromMonth month =
     case month of
         Jan ->
             "Jan"
@@ -224,49 +198,44 @@ omissionMonth month =
             "Dec"
 
 
-tableHeader : List Time.Posix -> Html Msg
-tableHeader sundays =
-    tr []
-        (sundays
-            |> List.map
-                (\posix ->
-                    if Time.toDay Time.utc posix <= 7 then
-                        th []
-                            [ text (Time.toMonth Time.utc posix |> omissionMonth) ]
-
-                    else
-                        th [] []
-                )
-        )
-
-
-type Weekend
-    = Scheduled Race
-    | Free
-    | Past
-
-
-isRaceWeek : Time.Posix -> List Race -> Time.Posix -> Weekend
-isRaceWeek sundayPosix races currentPosix =
+viewTicks : List Time.Posix -> Html Msg
+viewTicks sundays =
     let
+        isBeginningOfMonth posix =
+            Time.toDay Time.utc posix <= 7
+
+        tableheader posix =
+            if isBeginningOfMonth posix then
+                th []
+                    [ text (Time.toMonth Time.utc posix |> stringFromMonth) ]
+
+            else
+                th [] []
+    in
+    tr [] (sundays |> List.map tableheader)
+
+
+weekend : Time.Posix -> List Race -> Time.Posix -> Weekend
+weekend sundayPosix races currentPosix =
+    let
+        isRaceWeek raceday =
+            let
+                diff =
+                    Time.diff Day Time.utc raceday.posix sundayPosix
+            in
+            diff >= 0 && diff < 7
+
         racesInThisWeek =
             races
-                |> List.filter
-                    (\raceday ->
-                        let
-                            racedayPosix =
-                                raceday.posix
+                |> List.filter isRaceWeek
 
-                            diff =
-                                Time.diff Day Time.utc racedayPosix sundayPosix
-                        in
-                        diff >= 0 && diff < 7
-                    )
+        hasRace =
+            List.length racesInThisWeek > 0
 
         isPast =
             Time.diff Day Time.utc sundayPosix currentPosix > 0
     in
-    if List.length racesInThisWeek > 0 then
+    if hasRace then
         Scheduled
             (racesInThisWeek
                 |> List.reverse
@@ -281,30 +250,28 @@ isRaceWeek sundayPosix races currentPosix =
         Free
 
 
-tableBody : String -> List Time.Posix -> List Race -> Time.Posix -> Html Msg
-tableBody seriesName sundays races currentPosix =
-    tr []
-        (sundays
-            |> List.map
-                (\sundayPosix ->
-                    case isRaceWeek sundayPosix races currentPosix of
-                        Scheduled race ->
-                            td [ class "raceweek" ]
-                                [ label []
-                                    [ text (Time.toDay Time.utc sundayPosix |> String.fromInt)
-                                    , input [ type_ "checkbox" ] []
-                                    , div []
-                                        [ text (race.posix |> Iso8601.fromTime |> String.left 10)
-                                        , br [] []
-                                        , text race.name
-                                        ]
-                                    ]
+viewRaces : List Time.Posix -> List Race -> Time.Posix -> Html Msg
+viewRaces sundays races currentPosix =
+    let
+        tdCell sundayPosix =
+            case weekend sundayPosix races currentPosix of
+                Scheduled race ->
+                    td [ class "raceweek" ]
+                        [ label []
+                            [ text (Time.toDay Time.utc sundayPosix |> String.fromInt)
+                            , input [ type_ "checkbox" ] []
+                            , div []
+                                [ text (race.posix |> Iso8601.fromTime |> String.left 10)
+                                , br [] []
+                                , text race.name
                                 ]
+                            ]
+                        ]
 
-                        Free ->
-                            td [] []
+                Free ->
+                    td [] []
 
-                        Past ->
-                            td [ class "past" ] []
-                )
-        )
+                Past ->
+                    td [ class "past" ] []
+    in
+    tr [] (sundays |> List.map tdCell)
