@@ -1,11 +1,10 @@
-module Races exposing (Race, RaceCategory, getTestServerResponseWithPageTask)
+module Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
 
 import Http
 import Iso8601
 import Json.Decode as Decode
-import Json.Decode.Pipeline exposing (hardcoded, optional, required)
 import Task
-import Time exposing (Month(..), now)
+import Time
 
 
 
@@ -39,21 +38,21 @@ raceCategoryDecoder =
 
 raceDecoder : Decode.Decoder Race
 raceDecoder =
-    Decode.succeed Race
-        |> required "date" Iso8601.decoder
-        |> required "name" Decode.string
+    Decode.map2 Race
+        (Decode.field "date" Iso8601.decoder)
+        (Decode.field "name" Decode.string)
 
 
 
 -- API
 
 
-getTestServerResponseWithPageTask : String -> Task.Task Http.Error RaceCategory
-getTestServerResponseWithPageTask category =
+getServerResponseWithCategoryTask : String -> Task.Task Http.Error RaceCategory
+getServerResponseWithCategoryTask fileName =
     Http.task
         { method = "GET"
         , headers = []
-        , url = "https://y047aka.github.io/MotorSportsData/schedules/" ++ category
+        , url = fileName
         , body = Http.emptyBody
         , resolver = jsonResolver raceCategoryDecoder
         , timeout = Nothing

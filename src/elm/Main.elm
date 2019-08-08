@@ -6,7 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Iso8601
-import Races exposing (Race, RaceCategory, getTestServerResponseWithPageTask)
+import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
 import Task
 import Time exposing (Month(..), now)
 import Time.Extra as Time exposing (Interval(..))
@@ -43,7 +43,7 @@ type UserState
 init : () -> ( Model, Cmd Msg )
 init _ =
     ( Model Init [] Time.utc (Time.millisToPosix 0)
-    , qqq
+    , getServerResponse
     )
 
 
@@ -76,35 +76,38 @@ update msg model =
             ( { model | userState = Failed error }, Cmd.none )
 
 
-qqq : Cmd Msg
-qqq =
+getServerResponse : Cmd Msg
+getServerResponse =
     let
-        getResultTask =
-            getTestServerResponseWithPageTask
+        categories =
+            [ { category = "F1", season = "2019" }
+            , { category = "FormulaE", season = "2018-19" }
+            , { category = "WEC", season = "2018-19" }
+            , { category = "WEC", season = "2019-20" }
+            , { category = "ELMS", season = "2019" }
+            , { category = "IMSA", season = "2019" }
+            , { category = "IndyCar", season = "2019" }
+            , { category = "NASCAR", season = "2019" }
+            , { category = "SuperFormula", season = "2019" }
+            , { category = "SuperGT", season = "2019" }
+            , { category = "DTM", season = "2019" }
+            , { category = "BlancpainGT", season = "2019" }
+            , { category = "IGTC", season = "2019" }
+            , { category = "WTCR", season = "2019" }
+            , { category = "SuperTaikyu", season = "2019" }
+            , { category = "WRC", season = "2019" }
+            , { category = "MotoGP", season = "2019" }
+            , { category = "AirRace", season = "2019" }
+            ]
+
+        filePathFromItem { category, season } =
+            "https://y047aka.github.io/MotorSportsData/schedules/"
+                ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
     in
-    Task.attempt GotServerResponse <|
-        ([ "F1/F1_2019.json"
-         , "FormulaE/FormulaE_2018-19.json"
-         , "WEC/WEC_2018-19.json"
-         , "WEC/WEC_2019-20.json"
-         , "ELMS/ELMS_2019.json"
-         , "IMSA/IMSA_2019.json"
-         , "IndyCar/IndyCar_2019.json"
-         , "NASCAR/NASCAR_2019.json"
-         , "SuperFormula/SuperFormula_2019.json"
-         , "SuperGT/SuperGT_2019.json"
-         , "DTM/DTM_2019.json"
-         , "BlancpainGT/BlancpainGT_2019.json"
-         , "IGTC/IGTC_2019.json"
-         , "WTCR/WTCR_2019.json"
-         , "SuperTaikyu/SuperTaikyu_2019.json"
-         , "WRC/WRC_2019.json"
-         , "MotoGP/MotoGP_2019.json"
-         , "AirRace/AirRace_2019.json"
-         ]
-            |> List.map getResultTask
-            |> Task.sequence
-        )
+    categories
+        |> List.map (filePathFromItem >> getServerResponseWithCategoryTask)
+        |> Task.sequence
+        |> Task.attempt GotServerResponse
 
 
 
@@ -122,26 +125,26 @@ subscriptions model =
 
 view : Model -> Browser.Document Msg
 view model =
+    let
+        utc =
+            Time.utc
+
+        start =
+            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
+
+        until =
+            start |> Time.add Year 1 utc
+
+        sundays =
+            Time.range Sunday 1 utc start until
+    in
     { title = "MotorSportsCalendar 2019"
     , body =
         [ View.siteHeader
         , node "main"
             []
             [ section []
-                [ let
-                    utc =
-                        Time.utc
-
-                    start =
-                        Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
-
-                    until =
-                        start |> Time.add Year 1 utc
-
-                    sundays =
-                        Time.range Sunday 1 utc start until
-                  in
-                  div []
+                [ div []
                     (model.resultChunk
                         |> List.map
                             (\d ->
