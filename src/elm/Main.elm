@@ -175,7 +175,6 @@ view model =
             --                        div [] [ text (Debug.toString error) ]
             --                ]
             , View.links
-            , View.repositories
             ]
         , View.siteFooter
         ]

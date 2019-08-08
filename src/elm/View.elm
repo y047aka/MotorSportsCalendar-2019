@@ -1,7 +1,7 @@
-module View exposing (links, repositories, siteFooter, siteHeader)
+module View exposing (links, siteFooter, siteHeader)
 
-import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html exposing (Html, a, footer, h1, h2, h3, li, p, section, text, ul)
+import Html.Attributes exposing (class, href, target)
 
 
 siteHeader : Html msg
@@ -17,94 +17,59 @@ links =
         [ h1 [] [ text "Links" ]
         , h2 [] [ text "FIA" ]
         , ul []
-            [ li []
-                [ a [ href "https://www.formula1.com/en/racing/2019.html", target "_blank" ]
-                    [ h3 [] [ text "Formula 1" ]
-                    , text "The complete 2019 F1 Championship calendar"
+            (let
+                series =
+                    [ { name = "Formula 1", url = "https://www.formula1.com/en/racing/2019.html" }
+                    , { name = "WEC", url = "https://www.fiawec.com/en/calendar/80" }
+                    , { name = "Formula E", url = "https://www.fiaformulae.com/en/championship/race-calendar" }
+                    , { name = "WRC", url = "https://www.wrc.com/en/wrc/calendar/calendar/page/671-29772-16--.html" }
                     ]
-                ]
-            , li []
-                [ a [ href "https://www.fiawec.com/en/calendar/80", target "_blank" ]
-                    [ h3 [] [ text "FIA World Endurance Championship" ]
-                    , text "Calendar"
-                    ]
-                ]
-            , li []
-                [ a [ href "https://www.fiaformulae.com/en/championship/race-calendar", target "_blank" ]
-                    [ h3 [] [ text "FIA Formula E" ]
-                    , text "Race Calendar"
-                    ]
-                ]
-            , li []
-                [ a [ href "https://www.wrc.com/en/wrc/calendar/calendar/page/671-29772-16--.html", target "_blank" ]
-                    [ h3 [] [ text "WRC" ]
-                    , text "Rally Calendar Overview"
-                    ]
-                ]
-            ]
+             in
+             series
+                |> List.map
+                    (\item ->
+                        li []
+                            [ a [ href item.url, target "_blank" ]
+                                [ h3 [] [ text item.name ] ]
+                            ]
+                    )
+            )
         , h2 [] [ text "FIM" ]
         , ul []
             [ li []
                 [ a [ href "http://www.motogp.com/en/calendar", target "_blank" ]
                     [ h3 [] [ text "MotoGP" ]
-                    , text "MotoGP 2019 calendar"
                     ]
                 ]
             ]
         , h2 [] [ text "America" ]
         , ul []
-            [ li []
-                [ a [ href "https://www.indycar.com/Schedule", target "_blank" ]
-                    [ h3 [] [ text "IndyCar" ]
-                    , text "Schedule"
+            (let
+                series =
+                    [ { name = "IndyCar", url = "https://www.indycar.com/Schedule" }
+                    , { name = "IMSA WSCC", url = "https://sportscarchampionship.imsa.com/schedule-results/race-schedule" }
+                    , { name = "NASCAR", url = "https://www.nascar.com/monster-energy-nascar-cup-series/2019/schedule/" }
                     ]
-                ]
-            , li []
-                [ a [ href "https://sportscarchampionship.imsa.com/schedule-results/race-schedule", target "_blank" ]
-                    [ h3 [] [ text "IMSA WSCC" ]
-                    , text "Schedule"
-                    ]
-                ]
-            , li []
-                [ a [ href "https://www.nascar.com/monster-energy-nascar-cup-series/2019/schedule/", target "_blank" ]
-                    [ h3 [] [ text "NASCAR" ]
-                    , text "2019 Monster Energy NASCAR Cup Series Schedule"
-                    ]
-                ]
-            ]
+             in
+             series
+                |> List.map
+                    (\item ->
+                        li []
+                            [ a [ href item.url, target "_blank" ]
+                                [ h3 [] [ text item.name ] ]
+                            ]
+                    )
+            )
         , h2 [] [ text "Japan" ]
         , ul []
             [ li []
                 [ a [ href "https://supergt.net/races", target "_blank" ]
                     [ h3 [] [ text "SUPER GT" ]
-                    , text "Races"
                     ]
                 ]
             , li []
                 [ a [ href "https://superformula.net/sf2/en/race2019/", target "_blank" ]
                     [ h3 [] [ text "SUPER FORMULA" ]
-                    , text "Race Calendar 2019"
-                    ]
-                ]
-            ]
-        ]
-
-
-repositories : Html msg
-repositories =
-    section []
-        [ h1 [] [ text "Repositories" ]
-        , ul []
-            [ li []
-                [ a [ href "https://github.com/y047aka/MotorSportsCalendar", target "_blank" ]
-                    [ h3 [] [ text "Program" ]
-                    , text "https://github.com/y047aka/MotorSportsCalendar"
-                    ]
-                ]
-            , li []
-                [ a [ href "https://github.com/y047aka/MotorSportsData/tree/master/schedules", target "_blank" ]
-                    [ h3 [] [ text "Data" ]
-                    , text "https://github.com/y047aka/MotorSportsData/schedules"
                     ]
                 ]
             ]
