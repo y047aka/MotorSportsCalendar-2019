@@ -212,6 +212,23 @@ main
           input:checked + div
             display: block
         
+section.links
+  ul
+    display: grid
+    grid-auto-flow: column
+    grid-column-gap: 0.5rem
+    justify-content: start
+    list-style: none
+
+    li
+      a
+        display: block
+        padding: 1rem 1.5rem
+        font-size: 1.5rem
+        background: hsl(210, 90%, 40%)
+        color: #FFF
+        border-radius: 0.5rem
+  
 footer.site-footer
   .copyright
     text-align: right

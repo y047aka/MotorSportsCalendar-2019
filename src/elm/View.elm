@@ -13,7 +13,7 @@ siteHeader =
 
 links : Html msg
 links =
-    section []
+    section [ class "links" ]
         [ h1 [] [ text "Links" ]
         , h2 [] [ text "FIA" ]
         , ul []
