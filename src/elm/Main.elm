@@ -2,7 +2,8 @@ module Main exposing (main)
 
 import Browser
 import Html exposing (Html, br, caption, div, input, label, li, nav, node, section, table, td, text, th, tr, ul)
-import Html.Attributes exposing (checked, class, for, id, type_)
+import Html.Attributes exposing (checked, class, for, id, type_, value)
+import Html.Events exposing (onCheck)
 import Http
 import Iso8601
 import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
@@ -27,6 +28,7 @@ main =
 
 type alias Model =
     { raceCategories : List RaceCategory
+    , unselectedCategories : List String
     , zone : Time.Zone
     , time : Time.Posix
     }
@@ -40,7 +42,7 @@ type Weekend
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model [] Time.utc (Time.millisToPosix 0)
+    ( Model [] [] Time.utc (Time.millisToPosix 0)
     , getServerResponse
     )
 
@@ -51,6 +53,7 @@ init _ =
 
 type Msg
     = Tick Time.Posix
+    | UpdateCategories String Bool
     | GotServerResponse (Result Http.Error (List RaceCategory))
 
 
@@ -59,6 +62,17 @@ update msg model =
     case msg of
         Tick newTime ->
             ( { model | time = newTime }, Cmd.none )
+
+        UpdateCategories category isChecked ->
+            let
+                updatedCategories =
+                    if isChecked then
+                        model.unselectedCategories |> List.filter (\d -> not (d == category))
+
+                    else
+                        category :: model.unselectedCategories
+            in
+            ( { model | unselectedCategories = updatedCategories }, Cmd.none )
 
         GotServerResponse (Ok categories) ->
             ( { model | raceCategories = categories }, Cmd.none )
@@ -145,23 +159,24 @@ viewHeatMap model =
             Time.range Sunday 1 utc start until
     in
     section [ class "annual" ]
-        (List.append viewHeatMapHeader <|
-            (model.raceCategories
-                |> List.map
-                    (\series ->
-                        table
-                            [ class "" ]
-                            [ caption [] [ text series.seriesName ]
-                            , viewTicks sundays
-                            , viewRaces sundays series.races model.time
-                            ]
-                    )
-            )
+        (viewHeatMapHeader model
+            :: (model.raceCategories
+                    |> List.filter (\series -> not (model.unselectedCategories |> List.member series.seriesName))
+                    |> List.map
+                        (\series ->
+                            table
+                                [ class "" ]
+                                [ caption [] [ text series.seriesName ]
+                                , viewTicks sundays
+                                , viewRaces sundays series.races model.time
+                                ]
+                        )
+               )
         )
 
 
-viewHeatMapHeader : List (Html Msg)
-viewHeatMapHeader =
+viewHeatMapHeader : Model -> Html Msg
+viewHeatMapHeader model =
     let
         list =
             [ { id = "f1", value = "F1" }
@@ -183,22 +198,22 @@ viewHeatMapHeader =
             , { id = "rbar", value = "Red Bull Air Race" }
             ]
 
-        checkBoxes =
-            list |> List.map (\d -> input [ id d.id, type_ "checkbox", checked True ] [])
-
-        labels =
-            let
-                listItem d =
-                    li []
-                        [ label [ for d.id ] [ text d.value ]
-                        ]
-            in
-            [ nav []
-                [ ul [] (list |> List.map listItem)
+        listItem d =
+            li []
+                [ input
+                    [ id d.id
+                    , type_ "checkbox"
+                    , value d.value
+                    , checked <| not (List.member d.value model.unselectedCategories)
+                    , onCheck <| UpdateCategories d.value
+                    ]
+                    []
+                , label [ for d.id ] [ text d.value ]
                 ]
-            ]
     in
-    List.append checkBoxes labels
+    nav []
+        [ ul [] (list |> List.map listItem)
+        ]
 
 
 stringFromMonth : Time.Month -> String
