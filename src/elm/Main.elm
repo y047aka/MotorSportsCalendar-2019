@@ -1,8 +1,8 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, br, caption, div, input, label, node, section, table, td, text, th, tr)
-import Html.Attributes exposing (class, type_)
+import Html exposing (Html, br, caption, div, input, label, li, nav, node, section, table, td, text, th, tr, ul)
+import Html.Attributes exposing (checked, class, for, id, type_)
 import Http
 import Iso8601
 import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
@@ -144,18 +144,61 @@ viewHeatMap model =
         sundays =
             Time.range Sunday 1 utc start until
     in
-    section []
-        (model.raceCategories
-            |> List.map
-                (\series ->
-                    table
-                        [ class "heatmap" ]
-                        [ caption [] [ text series.seriesName ]
-                        , viewTicks sundays
-                        , viewRaces sundays series.races model.time
-                        ]
-                )
+    section [ class "annual" ]
+        (List.append viewHeatMapHeader <|
+            (model.raceCategories
+                |> List.map
+                    (\series ->
+                        table
+                            [ class "" ]
+                            [ caption [] [ text series.seriesName ]
+                            , viewTicks sundays
+                            , viewRaces sundays series.races model.time
+                            ]
+                    )
+            )
         )
+
+
+viewHeatMapHeader : List (Html Msg)
+viewHeatMapHeader =
+    let
+        list =
+            [ { id = "f1", value = "F1" }
+            , { id = "formulaE", value = "Formula E" }
+            , { id = "wec", value = "WEC" }
+            , { id = "elms", value = "ELMS" }
+            , { id = "wscc", value = "IMSA WSCC" }
+            , { id = "indycar", value = "IndyCar" }
+            , { id = "nascar", value = "NASCAR" }
+            , { id = "superFormula", value = "SUPER FORMULA" }
+            , { id = "superGT", value = "SUPER GT" }
+            , { id = "dtm", value = "DTM" }
+            , { id = "blancpain", value = "Blancpain GT" }
+            , { id = "igtc", value = "IGTC" }
+            , { id = "wtcr", value = "WTCR" }
+            , { id = "superTaikyu", value = "Super Taikyu" }
+            , { id = "wrc", value = "WRC" }
+            , { id = "motoGP", value = "MotoGP" }
+            , { id = "rbar", value = "Red Bull Air Race" }
+            ]
+
+        checkBoxes =
+            list |> List.map (\d -> input [ id d.id, type_ "checkbox", checked True ] [])
+
+        labels =
+            let
+                listItem d =
+                    li []
+                        [ label [ for d.id ] [ text d.value ]
+                        ]
+            in
+            [ nav []
+                [ ul [] (list |> List.map listItem)
+                ]
+            ]
+    in
+    List.append checkBoxes labels
 
 
 stringFromMonth : Time.Month -> String
