@@ -164,9 +164,17 @@ viewHeatMap model =
                     |> List.filter (\series -> not (model.unselectedCategories |> List.member series.seriesName))
                     |> List.map
                         (\series ->
-                            table
-                                [ class "" ]
-                                [ caption [] [ text series.seriesName ]
+                            let
+                                tableCaption =
+                                    case series.season of
+                                        "2019" ->
+                                            series.seriesName
+
+                                        _ ->
+                                            series.seriesName ++ " (" ++ series.season ++ ")"
+                            in
+                            table []
+                                [ caption [] [ text tableCaption ]
                                 , viewTicks sundays
                                 , viewRaces sundays series.races model.time
                                 ]
