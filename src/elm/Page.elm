@@ -22,68 +22,42 @@ siteHeader =
         ]
 
 
-links : Html msg
-links =
+externalLinks : Html msg
+externalLinks =
+    let
+        listItem item =
+            li []
+                [ a [ href item.url, target "_blank" ]
+                    [ h3 [] [ text item.name ] ]
+                ]
+    in
     section [ class "links" ]
         [ h1 [] [ text "Links" ]
         , h2 [] [ text "FIA" ]
-        , ul []
-            (let
-                series =
-                    [ { name = "Formula 1", url = "https://www.formula1.com/en/racing/2019.html" }
-                    , { name = "WEC", url = "https://www.fiawec.com/en/calendar/80" }
-                    , { name = "Formula E", url = "https://www.fiaformulae.com/en/championship/race-calendar" }
-                    , { name = "WRC", url = "https://www.wrc.com/en/wrc/calendar/calendar/page/671-29772-16--.html" }
-                    ]
-             in
-             series
-                |> List.map
-                    (\item ->
-                        li []
-                            [ a [ href item.url, target "_blank" ]
-                                [ h3 [] [ text item.name ] ]
-                            ]
-                    )
-            )
+        , ul [] <|
+            List.map listItem
+                [ { name = "Formula 1", url = "https://www.formula1.com/en/racing/2019.html" }
+                , { name = "WEC", url = "https://www.fiawec.com/en/calendar/80" }
+                , { name = "Formula E", url = "https://www.fiaformulae.com/en/championship/race-calendar" }
+                , { name = "WRC", url = "https://www.wrc.com/en/wrc/calendar/calendar/page/671-29772-16--.html" }
+                ]
         , h2 [] [ text "FIM" ]
-        , ul []
-            [ li []
-                [ a [ href "http://www.motogp.com/en/calendar", target "_blank" ]
-                    [ h3 [] [ text "MotoGP" ]
-                    ]
-                ]
-            ]
+        , ul [] <|
+            List.map listItem
+                [ { name = "MotoGP", url = "http://www.motogp.com/en/calendar" } ]
         , h2 [] [ text "America" ]
-        , ul []
-            (let
-                series =
-                    [ { name = "IndyCar", url = "https://www.indycar.com/Schedule" }
-                    , { name = "IMSA WSCC", url = "https://sportscarchampionship.imsa.com/schedule-results/race-schedule" }
-                    , { name = "NASCAR", url = "https://www.nascar.com/monster-energy-nascar-cup-series/2019/schedule/" }
-                    ]
-             in
-             series
-                |> List.map
-                    (\item ->
-                        li []
-                            [ a [ href item.url, target "_blank" ]
-                                [ h3 [] [ text item.name ] ]
-                            ]
-                    )
-            )
+        , ul [] <|
+            List.map listItem
+                [ { name = "IndyCar", url = "https://www.indycar.com/Schedule" }
+                , { name = "IMSA WSCC", url = "https://sportscarchampionship.imsa.com/schedule-results/race-schedule" }
+                , { name = "NASCAR", url = "https://www.nascar.com/monster-energy-nascar-cup-series/2019/schedule/" }
+                ]
         , h2 [] [ text "Japan" ]
-        , ul []
-            [ li []
-                [ a [ href "https://supergt.net/races", target "_blank" ]
-                    [ h3 [] [ text "SUPER GT" ]
-                    ]
+        , ul [] <|
+            List.map listItem
+                [ { name = "SUPER GT", url = "https://supergt.net/races" }
+                , { name = "SUPER FORMULA", url = "https://superformula.net/sf2/en/race2019/" }
                 ]
-            , li []
-                [ a [ href "https://superformula.net/sf2/en/race2019/", target "_blank" ]
-                    [ h3 [] [ text "SUPER FORMULA" ]
-                    ]
-                ]
-            ]
         ]
 
 
