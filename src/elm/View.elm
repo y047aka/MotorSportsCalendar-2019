@@ -1,6 +1,6 @@
 module View exposing (links, siteFooter, siteHeader)
 
-import Html exposing (Html, a, footer, h1, h2, h3, li, p, section, text, ul)
+import Html exposing (Html, a, div, footer, h1, h2, h3, li, p, section, text, ul)
 import Html.Attributes exposing (class, href, target)
 
 
@@ -13,10 +13,10 @@ siteHeader =
 
 links : Html msg
 links =
-    section [ class "links" ]
+    section [ class "external-links" ]
         [ h1 [] [ text "Links" ]
         , h2 [] [ text "FIA" ]
-        , ul []
+        , div [ class "links" ]
             (let
                 series =
                     [ { name = "Formula 1", url = "https://www.formula1.com/en/racing/2019.html" }
@@ -28,22 +28,17 @@ links =
              series
                 |> List.map
                     (\item ->
-                        li []
-                            [ a [ href item.url, target "_blank" ]
-                                [ h3 [] [ text item.name ] ]
-                            ]
+                        a [ href item.url, target "_blank" ]
+                            [ h3 [] [ text item.name ] ]
                     )
             )
         , h2 [] [ text "FIM" ]
-        , ul []
-            [ li []
-                [ a [ href "http://www.motogp.com/en/calendar", target "_blank" ]
-                    [ h3 [] [ text "MotoGP" ]
-                    ]
-                ]
+        , div [ class "links" ]
+            [ a [ href "http://www.motogp.com/en/calendar", target "_blank" ]
+                [ h3 [] [ text "MotoGP" ] ]
             ]
         , h2 [] [ text "America" ]
-        , ul []
+        , div [ class "links" ]
             (let
                 series =
                     [ { name = "IndyCar", url = "https://www.indycar.com/Schedule" }
@@ -54,24 +49,16 @@ links =
              series
                 |> List.map
                     (\item ->
-                        li []
-                            [ a [ href item.url, target "_blank" ]
-                                [ h3 [] [ text item.name ] ]
-                            ]
+                        a [ href item.url, target "_blank" ]
+                            [ h3 [] [ text item.name ] ]
                     )
             )
         , h2 [] [ text "Japan" ]
-        , ul []
-            [ li []
-                [ a [ href "https://supergt.net/races", target "_blank" ]
-                    [ h3 [] [ text "SUPER GT" ]
-                    ]
-                ]
-            , li []
-                [ a [ href "https://superformula.net/sf2/en/race2019/", target "_blank" ]
-                    [ h3 [] [ text "SUPER FORMULA" ]
-                    ]
-                ]
+        , div [ class "links" ]
+            [ a [ href "https://supergt.net/races", target "_blank" ]
+                [ h3 [] [ text "SUPER GT" ] ]
+            , a [ href "https://superformula.net/sf2/en/race2019/", target "_blank" ]
+                [ h3 [] [ text "SUPER FORMULA" ] ]
             ]
         ]
 
