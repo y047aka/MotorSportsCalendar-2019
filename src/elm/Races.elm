@@ -1,4 +1,4 @@
-module Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
+module Races exposing (Race, RaceCategory, getServerResponse, getServerResponseWithCategoryTask)
 
 import Http
 import Iso8601
@@ -45,6 +45,14 @@ raceDecoder =
 
 
 -- API
+
+
+getServerResponse : (Result Http.Error RaceCategory -> msg) -> String -> Cmd msg
+getServerResponse msg url =
+    Http.get
+        { url = url
+        , expect = Http.expectJson msg raceCategoryDecoder
+        }
 
 
 getServerResponseWithCategoryTask : String -> Task.Task Http.Error RaceCategory

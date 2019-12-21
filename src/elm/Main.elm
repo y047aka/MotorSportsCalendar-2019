@@ -7,8 +7,7 @@ import Html.Events exposing (onCheck)
 import Http
 import Iso8601
 import Page
-import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
-import Task
+import Races exposing (Race, RaceCategory)
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
 import Weekend exposing (Weekend(..))
@@ -49,7 +48,7 @@ init _ =
 type Msg
     = Tick Time.Posix
     | UpdateCategories String Bool
-    | GotServerResponse (Result Http.Error (List RaceCategory))
+    | GotServerResponse (Result Http.Error RaceCategory)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -69,11 +68,11 @@ update msg model =
             in
             ( { model | unselectedCategories = updatedCategories }, Cmd.none )
 
-        GotServerResponse (Ok categories) ->
-            ( { model | raceCategories = categories }, Cmd.none )
+        GotServerResponse (Ok category) ->
+            ( { model | raceCategories = category :: model.raceCategories }, Cmd.none )
 
         GotServerResponse (Err error) ->
-            ( { model | raceCategories = [] }, Cmd.none )
+            ( model, Cmd.none )
 
 
 getServerResponse : Cmd Msg
@@ -105,9 +104,8 @@ getServerResponse =
                 ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
     in
     list
-        |> List.map (filePathFromItem >> getServerResponseWithCategoryTask)
-        |> Task.sequence
-        |> Task.attempt GotServerResponse
+        |> List.map (filePathFromItem >> Races.getServerResponse GotServerResponse)
+        |> Cmd.batch
 
 
 
