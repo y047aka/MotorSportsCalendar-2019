@@ -215,46 +215,6 @@ viewHeatMapHeader model =
         ]
 
 
-stringFromMonth : Time.Month -> String
-stringFromMonth month =
-    case month of
-        Jan ->
-            "Jan"
-
-        Feb ->
-            "Feb"
-
-        Mar ->
-            "Mar"
-
-        Apr ->
-            "Apr"
-
-        May ->
-            "May"
-
-        Jun ->
-            "Jun"
-
-        Jul ->
-            "Jul"
-
-        Aug ->
-            "Aug"
-
-        Sep ->
-            "Sep"
-
-        Oct ->
-            "Oct"
-
-        Nov ->
-            "Nov"
-
-        Dec ->
-            "Dec"
-
-
 viewTicks : List Time.Posix -> Html Msg
 viewTicks sundays =
     let
@@ -332,3 +292,47 @@ viewRaces sundays races currentPosix =
                     td [ class "past" ] []
     in
     tr [] (sundays |> List.map tdCell)
+
+
+
+-- PRIVATE FUNCTIONS
+
+
+stringFromMonth : Time.Month -> String
+stringFromMonth month =
+    case month of
+        Jan ->
+            "Jan"
+
+        Feb ->
+            "Feb"
+
+        Mar ->
+            "Mar"
+
+        Apr ->
+            "Apr"
+
+        May ->
+            "May"
+
+        Jun ->
+            "Jun"
+
+        Jul ->
+            "Jul"
+
+        Aug ->
+            "Aug"
+
+        Sep ->
+            "Sep"
+
+        Oct ->
+            "Oct"
+
+        Nov ->
+            "Nov"
+
+        Dec ->
+            "Dec"
