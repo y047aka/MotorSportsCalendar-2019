@@ -11,6 +11,7 @@ import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
 import Task
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
+import Weekend exposing (Weekend(..))
 
 
 main =
@@ -32,12 +33,6 @@ type alias Model =
     , zone : Time.Zone
     , time : Time.Posix
     }
-
-
-type Weekend
-    = Scheduled Race
-    | Free
-    | Past
 
 
 init : () -> ( Model, Cmd Msg )
@@ -232,46 +227,11 @@ viewTicks sundays =
     tr [] (sundays |> List.map tableheader)
 
 
-weekend : Time.Posix -> List Race -> Time.Posix -> Weekend
-weekend sundayPosix races currentPosix =
-    let
-        isRaceWeek raceday =
-            let
-                diff =
-                    Time.diff Day Time.utc raceday.posix sundayPosix
-            in
-            diff >= 0 && diff < 7
-
-        racesInThisWeek =
-            races
-                |> List.filter isRaceWeek
-
-        hasRace =
-            List.length racesInThisWeek > 0
-
-        isPast =
-            Time.diff Day Time.utc sundayPosix currentPosix > 0
-    in
-    if hasRace then
-        Scheduled
-            (racesInThisWeek
-                |> List.reverse
-                |> List.head
-                |> Maybe.withDefault { name = "name", posix = Time.millisToPosix 0 }
-            )
-
-    else if isPast then
-        Past
-
-    else
-        Free
-
-
 viewRaces : List Time.Posix -> List Race -> Time.Posix -> Html Msg
 viewRaces sundays races currentPosix =
     let
         tdCell sundayPosix =
-            case weekend sundayPosix races currentPosix of
+            case Weekend.weekend sundayPosix races currentPosix of
                 Scheduled race ->
                     td [ class "raceweek" ]
                         [ label []
