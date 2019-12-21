@@ -1,7 +1,18 @@
-module Page exposing (links, siteFooter, siteHeader)
+module Page exposing (view)
 
-import Html exposing (Html, a, footer, h1, h2, h3, li, p, section, text, ul)
+import Html exposing (..)
 import Html.Attributes exposing (class, href, target)
+
+
+view : Html msg -> List (Html msg)
+view content =
+    [ siteHeader
+    , main_ []
+        [ content
+        , externalLinks
+        ]
+    , siteFooter
+    ]
 
 
 siteHeader : Html msg

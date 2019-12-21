@@ -131,15 +131,7 @@ subscriptions model =
 view : Model -> Browser.Document Msg
 view model =
     { title = "MotorSportsCalendar 2019"
-    , body =
-        [ Page.siteHeader
-        , node "main"
-            []
-            [ viewHeatMap model
-            , Page.links
-            ]
-        , Page.siteFooter
-        ]
+    , body = Page.view (viewHeatMap model)
     }
 
 
