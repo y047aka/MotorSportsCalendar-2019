@@ -178,26 +178,6 @@ viewHeatMap model =
 viewHeatMapHeader : Model -> Html Msg
 viewHeatMapHeader model =
     let
-        list =
-            [ { id = "f1", value = "F1" }
-            , { id = "formulaE", value = "Formula E" }
-            , { id = "wec", value = "WEC" }
-            , { id = "elms", value = "ELMS" }
-            , { id = "wscc", value = "IMSA WSCC" }
-            , { id = "indycar", value = "IndyCar" }
-            , { id = "nascar", value = "NASCAR" }
-            , { id = "superFormula", value = "SUPER FORMULA" }
-            , { id = "superGT", value = "SUPER GT" }
-            , { id = "dtm", value = "DTM" }
-            , { id = "blancpain", value = "Blancpain GT" }
-            , { id = "igtc", value = "IGTC" }
-            , { id = "wtcr", value = "WTCR" }
-            , { id = "superTaikyu", value = "Super Taikyu" }
-            , { id = "wrc", value = "WRC" }
-            , { id = "motoGP", value = "MotoGP" }
-            , { id = "rbar", value = "Red Bull Air Race" }
-            ]
-
         listItem d =
             li []
                 [ input
@@ -212,7 +192,26 @@ viewHeatMapHeader model =
                 ]
     in
     nav []
-        [ ul [] (list |> List.map listItem)
+        [ ul [] <|
+            List.map listItem
+                [ { id = "f1", value = "F1" }
+                , { id = "formulaE", value = "Formula E" }
+                , { id = "wec", value = "WEC" }
+                , { id = "elms", value = "ELMS" }
+                , { id = "wscc", value = "IMSA WSCC" }
+                , { id = "indycar", value = "IndyCar" }
+                , { id = "nascar", value = "NASCAR" }
+                , { id = "superFormula", value = "SUPER FORMULA" }
+                , { id = "superGT", value = "SUPER GT" }
+                , { id = "dtm", value = "DTM" }
+                , { id = "blancpain", value = "Blancpain GT" }
+                , { id = "igtc", value = "IGTC" }
+                , { id = "wtcr", value = "WTCR" }
+                , { id = "superTaikyu", value = "Super Taikyu" }
+                , { id = "wrc", value = "WRC" }
+                , { id = "motoGP", value = "MotoGP" }
+                , { id = "rbar", value = "Red Bull Air Race" }
+                ]
         ]
 
 
