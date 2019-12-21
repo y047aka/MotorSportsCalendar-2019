@@ -6,11 +6,12 @@ import Html.Attributes exposing (checked, class, for, id, type_, value)
 import Html.Events exposing (onCheck)
 import Http
 import Iso8601
+import Page
 import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
 import Task
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
-import View
+import Weekend exposing (Weekend(..))
 
 
 main =
@@ -32,12 +33,6 @@ type alias Model =
     , zone : Time.Zone
     , time : Time.Posix
     }
-
-
-type Weekend
-    = Scheduled Race
-    | Free
-    | Past
 
 
 init : () -> ( Model, Cmd Msg )
@@ -131,15 +126,7 @@ subscriptions model =
 view : Model -> Browser.Document Msg
 view model =
     { title = "MotorSportsCalendar 2019"
-    , body =
-        [ View.siteHeader
-        , node "main"
-            []
-            [ viewHeatMap model
-            , View.links
-            ]
-        , View.siteFooter
-        ]
+    , body = Page.view (viewHeatMap model)
     }
 
 
@@ -186,26 +173,6 @@ viewHeatMap model =
 viewHeatMapHeader : Model -> Html Msg
 viewHeatMapHeader model =
     let
-        list =
-            [ { id = "f1", value = "F1" }
-            , { id = "formulaE", value = "Formula E" }
-            , { id = "wec", value = "WEC" }
-            , { id = "elms", value = "ELMS" }
-            , { id = "wscc", value = "IMSA WSCC" }
-            , { id = "indycar", value = "IndyCar" }
-            , { id = "nascar", value = "NASCAR" }
-            , { id = "superFormula", value = "SUPER FORMULA" }
-            , { id = "superGT", value = "SUPER GT" }
-            , { id = "dtm", value = "DTM" }
-            , { id = "blancpain", value = "Blancpain GT" }
-            , { id = "igtc", value = "IGTC" }
-            , { id = "wtcr", value = "WTCR" }
-            , { id = "superTaikyu", value = "Super Taikyu" }
-            , { id = "wrc", value = "WRC" }
-            , { id = "motoGP", value = "MotoGP" }
-            , { id = "rbar", value = "Red Bull Air Race" }
-            ]
-
         listItem d =
             li []
                 [ input
@@ -220,8 +187,75 @@ viewHeatMapHeader model =
                 ]
     in
     nav []
-        [ ul [] (list |> List.map listItem)
+        [ ul [] <|
+            List.map listItem
+                [ { id = "f1", value = "F1" }
+                , { id = "formulaE", value = "Formula E" }
+                , { id = "wec", value = "WEC" }
+                , { id = "elms", value = "ELMS" }
+                , { id = "wscc", value = "IMSA WSCC" }
+                , { id = "indycar", value = "IndyCar" }
+                , { id = "nascar", value = "NASCAR" }
+                , { id = "superFormula", value = "SUPER FORMULA" }
+                , { id = "superGT", value = "SUPER GT" }
+                , { id = "dtm", value = "DTM" }
+                , { id = "blancpain", value = "Blancpain GT" }
+                , { id = "igtc", value = "IGTC" }
+                , { id = "wtcr", value = "WTCR" }
+                , { id = "superTaikyu", value = "Super Taikyu" }
+                , { id = "wrc", value = "WRC" }
+                , { id = "motoGP", value = "MotoGP" }
+                , { id = "rbar", value = "Red Bull Air Race" }
+                ]
         ]
+
+
+viewTicks : List Time.Posix -> Html Msg
+viewTicks sundays =
+    let
+        isBeginningOfMonth posix =
+            Time.toDay Time.utc posix <= 7
+
+        tableheader posix =
+            if isBeginningOfMonth posix then
+                th []
+                    [ text (Time.toMonth Time.utc posix |> stringFromMonth) ]
+
+            else
+                th [] []
+    in
+    tr [] (sundays |> List.map tableheader)
+
+
+viewRaces : List Time.Posix -> List Race -> Time.Posix -> Html Msg
+viewRaces sundays races currentPosix =
+    let
+        tdCell sundayPosix =
+            case Weekend.weekend sundayPosix races currentPosix of
+                Scheduled race ->
+                    td [ class "raceweek" ]
+                        [ label []
+                            [ text (Time.toDay Time.utc sundayPosix |> String.fromInt)
+                            , input [ type_ "checkbox" ] []
+                            , div []
+                                [ text (race.posix |> Iso8601.fromTime |> String.left 10)
+                                , br [] []
+                                , text race.name
+                                ]
+                            ]
+                        ]
+
+                Free ->
+                    td [] []
+
+                Past ->
+                    td [ class "past" ] []
+    in
+    tr [] (sundays |> List.map tdCell)
+
+
+
+-- PRIVATE FUNCTIONS
 
 
 stringFromMonth : Time.Month -> String
@@ -262,82 +296,3 @@ stringFromMonth month =
 
         Dec ->
             "Dec"
-
-
-viewTicks : List Time.Posix -> Html Msg
-viewTicks sundays =
-    let
-        isBeginningOfMonth posix =
-            Time.toDay Time.utc posix <= 7
-
-        tableheader posix =
-            if isBeginningOfMonth posix then
-                th []
-                    [ text (Time.toMonth Time.utc posix |> stringFromMonth) ]
-
-            else
-                th [] []
-    in
-    tr [] (sundays |> List.map tableheader)
-
-
-weekend : Time.Posix -> List Race -> Time.Posix -> Weekend
-weekend sundayPosix races currentPosix =
-    let
-        isRaceWeek raceday =
-            let
-                diff =
-                    Time.diff Day Time.utc raceday.posix sundayPosix
-            in
-            diff >= 0 && diff < 7
-
-        racesInThisWeek =
-            races
-                |> List.filter isRaceWeek
-
-        hasRace =
-            List.length racesInThisWeek > 0
-
-        isPast =
-            Time.diff Day Time.utc sundayPosix currentPosix > 0
-    in
-    if hasRace then
-        Scheduled
-            (racesInThisWeek
-                |> List.reverse
-                |> List.head
-                |> Maybe.withDefault { name = "name", posix = Time.millisToPosix 0 }
-            )
-
-    else if isPast then
-        Past
-
-    else
-        Free
-
-
-viewRaces : List Time.Posix -> List Race -> Time.Posix -> Html Msg
-viewRaces sundays races currentPosix =
-    let
-        tdCell sundayPosix =
-            case weekend sundayPosix races currentPosix of
-                Scheduled race ->
-                    td [ class "raceweek" ]
-                        [ label []
-                            [ text (Time.toDay Time.utc sundayPosix |> String.fromInt)
-                            , input [ type_ "checkbox" ] []
-                            , div []
-                                [ text (race.posix |> Iso8601.fromTime |> String.left 10)
-                                , br [] []
-                                , text race.name
-                                ]
-                            ]
-                        ]
-
-                Free ->
-                    td [] []
-
-                Past ->
-                    td [ class "past" ] []
-    in
-    tr [] (sundays |> List.map tdCell)
