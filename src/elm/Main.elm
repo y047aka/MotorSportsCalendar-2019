@@ -6,11 +6,11 @@ import Html.Attributes exposing (checked, class, for, id, type_, value)
 import Html.Events exposing (onCheck)
 import Http
 import Iso8601
+import Page
 import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
 import Task
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
-import View
 
 
 main =
@@ -132,13 +132,13 @@ view : Model -> Browser.Document Msg
 view model =
     { title = "MotorSportsCalendar 2019"
     , body =
-        [ View.siteHeader
+        [ Page.siteHeader
         , node "main"
             []
             [ viewHeatMap model
-            , View.links
+            , Page.links
             ]
-        , View.siteFooter
+        , Page.siteFooter
         ]
     }
 

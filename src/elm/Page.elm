@@ -1,4 +1,4 @@
-module View exposing (links, siteFooter, siteHeader)
+module Page exposing (links, siteFooter, siteHeader)
 
 import Html exposing (Html, a, footer, h1, h2, h3, li, p, section, text, ul)
 import Html.Attributes exposing (class, href, target)
