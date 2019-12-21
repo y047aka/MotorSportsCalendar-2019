@@ -7,7 +7,7 @@ import Html.Events exposing (onCheck)
 import Http
 import Iso8601
 import Page
-import Races exposing (Race, RaceCategory)
+import Races exposing (Race, RaceCategory, getServerResponse)
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
 import Weekend exposing (Weekend(..))
@@ -36,8 +36,33 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
+    let
+        filePathFromItem { category, season } =
+            "https://y047aka.github.io/MotorSportsData/schedules/"
+                ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
+    in
     ( Model [] [] Time.utc (Time.millisToPosix 0)
-    , getServerResponse
+    , Cmd.batch <|
+        List.map (filePathFromItem >> getServerResponse GotServerResponse)
+            [ { category = "F1", season = "2019" }
+            , { category = "FormulaE", season = "2018-19" }
+            , { category = "WEC", season = "2018-19" }
+            , { category = "WEC", season = "2019-20" }
+            , { category = "ELMS", season = "2019" }
+            , { category = "IMSA", season = "2019" }
+            , { category = "IndyCar", season = "2019" }
+            , { category = "NASCAR", season = "2019" }
+            , { category = "SuperFormula", season = "2019" }
+            , { category = "SuperGT", season = "2019" }
+            , { category = "DTM", season = "2019" }
+            , { category = "BlancpainGT", season = "2019" }
+            , { category = "IGTC", season = "2019" }
+            , { category = "WTCR", season = "2019" }
+            , { category = "SuperTaikyu", season = "2019" }
+            , { category = "WRC", season = "2019" }
+            , { category = "MotoGP", season = "2019" }
+            , { category = "AirRace", season = "2019" }
+            ]
     )
 
 
@@ -73,39 +98,6 @@ update msg model =
 
         GotServerResponse (Err error) ->
             ( model, Cmd.none )
-
-
-getServerResponse : Cmd Msg
-getServerResponse =
-    let
-        list =
-            [ { category = "F1", season = "2019" }
-            , { category = "FormulaE", season = "2018-19" }
-            , { category = "WEC", season = "2018-19" }
-            , { category = "WEC", season = "2019-20" }
-            , { category = "ELMS", season = "2019" }
-            , { category = "IMSA", season = "2019" }
-            , { category = "IndyCar", season = "2019" }
-            , { category = "NASCAR", season = "2019" }
-            , { category = "SuperFormula", season = "2019" }
-            , { category = "SuperGT", season = "2019" }
-            , { category = "DTM", season = "2019" }
-            , { category = "BlancpainGT", season = "2019" }
-            , { category = "IGTC", season = "2019" }
-            , { category = "WTCR", season = "2019" }
-            , { category = "SuperTaikyu", season = "2019" }
-            , { category = "WRC", season = "2019" }
-            , { category = "MotoGP", season = "2019" }
-            , { category = "AirRace", season = "2019" }
-            ]
-
-        filePathFromItem { category, season } =
-            "https://y047aka.github.io/MotorSportsData/schedules/"
-                ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
-    in
-    list
-        |> List.map (filePathFromItem >> Races.getServerResponse GotServerResponse)
-        |> Cmd.batch
 
 
 
