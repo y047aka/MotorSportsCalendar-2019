@@ -1,4 +1,4 @@
-module Races exposing (Race, RaceCategory, getServerResponse)
+module Races exposing (Race, Season, getServerResponse)
 
 import Http
 import Iso8601
@@ -10,7 +10,7 @@ import Time
 -- TYPES
 
 
-type alias RaceCategory =
+type alias Season =
     { seriesName : String
     , season : String
     , races : List Race
@@ -27,9 +27,9 @@ type alias Race =
 -- DECODER
 
 
-raceCategoryDecoder : Decode.Decoder RaceCategory
+raceCategoryDecoder : Decode.Decoder Season
 raceCategoryDecoder =
-    Decode.map3 RaceCategory
+    Decode.map3 Season
         (Decode.field "seriesName" Decode.string)
         (Decode.field "season" Decode.string)
         (Decode.field "races" (Decode.list raceDecoder))
@@ -46,7 +46,7 @@ raceDecoder =
 -- API
 
 
-getServerResponse : (Result Http.Error RaceCategory -> msg) -> String -> Cmd msg
+getServerResponse : (Result Http.Error Season -> msg) -> String -> Cmd msg
 getServerResponse msg url =
     Http.get
         { url = url

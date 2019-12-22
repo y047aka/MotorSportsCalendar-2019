@@ -7,7 +7,7 @@ import Html.Events exposing (onCheck)
 import Http
 import Iso8601
 import Page
-import Races exposing (Race, RaceCategory, getServerResponse)
+import Races exposing (Race, Season, getServerResponse)
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
 import Weekend exposing (Weekend(..))
@@ -27,7 +27,7 @@ main =
 
 
 type alias Model =
-    { raceCategories : List RaceCategory
+    { raceCategories : List Season
     , unselectedCategories : List String
     , zone : Time.Zone
     , time : Time.Posix
@@ -73,7 +73,7 @@ init _ =
 type Msg
     = Tick Time.Posix
     | UpdateCategories String Bool
-    | GotServerResponse (Result Http.Error RaceCategory)
+    | GotServerResponse (Result Http.Error Season)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
