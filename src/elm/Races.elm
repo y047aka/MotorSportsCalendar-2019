@@ -1,9 +1,8 @@
-module Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
+module Races exposing (Race, Season, getServerResponse)
 
 import Http
 import Iso8601
 import Json.Decode as Decode
-import Task
 import Time
 
 
@@ -11,7 +10,7 @@ import Time
 -- TYPES
 
 
-type alias RaceCategory =
+type alias Season =
     { seriesName : String
     , season : String
     , races : List Race
@@ -28,9 +27,9 @@ type alias Race =
 -- DECODER
 
 
-raceCategoryDecoder : Decode.Decoder RaceCategory
+raceCategoryDecoder : Decode.Decoder Season
 raceCategoryDecoder =
-    Decode.map3 RaceCategory
+    Decode.map3 Season
         (Decode.field "seriesName" Decode.string)
         (Decode.field "season" Decode.string)
         (Decode.field "races" (Decode.list raceDecoder))
@@ -47,39 +46,9 @@ raceDecoder =
 -- API
 
 
-getServerResponseWithCategoryTask : String -> Task.Task Http.Error RaceCategory
-getServerResponseWithCategoryTask fileName =
-    Http.task
-        { method = "GET"
-        , headers = []
-        , url = fileName
-        , body = Http.emptyBody
-        , resolver = jsonResolver raceCategoryDecoder
-        , timeout = Nothing
+getServerResponse : (Result Http.Error Season -> msg) -> String -> Cmd msg
+getServerResponse msg url =
+    Http.get
+        { url = url
+        , expect = Http.expectJson msg raceCategoryDecoder
         }
-
-
-jsonResolver : Decode.Decoder a -> Http.Resolver Http.Error a
-jsonResolver decoder =
-    Http.stringResolver <|
-        \response ->
-            case response of
-                Http.BadUrl_ url ->
-                    Err (Http.BadUrl url)
-
-                Http.Timeout_ ->
-                    Err Http.Timeout
-
-                Http.NetworkError_ ->
-                    Err Http.NetworkError
-
-                Http.BadStatus_ metadata body ->
-                    Err (Http.BadStatus metadata.statusCode)
-
-                Http.GoodStatus_ metadata body ->
-                    case Decode.decodeString decoder body of
-                        Ok value ->
-                            Ok value
-
-                        Err err ->
-                            Err (Http.BadBody (Decode.errorToString err))

@@ -6,9 +6,9 @@ import Html.Attributes exposing (checked, class, for, id, type_, value)
 import Html.Events exposing (onCheck)
 import Http
 import Iso8601
+import List.Extra as List
 import Page
-import Races exposing (Race, RaceCategory, getServerResponseWithCategoryTask)
-import Task
+import Races exposing (Race, Season, getServerResponse)
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
 import Weekend exposing (Weekend(..))
@@ -28,7 +28,7 @@ main =
 
 
 type alias Model =
-    { raceCategories : List RaceCategory
+    { raceCategories : List Season
     , unselectedCategories : List String
     , zone : Time.Zone
     , time : Time.Posix
@@ -37,49 +37,14 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( Model [] [] Time.utc (Time.millisToPosix 0)
-    , getServerResponse
-    )
-
-
-
--- UPDATE
-
-
-type Msg
-    = Tick Time.Posix
-    | UpdateCategories String Bool
-    | GotServerResponse (Result Http.Error (List RaceCategory))
-
-
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
-    case msg of
-        Tick newTime ->
-            ( { model | time = newTime }, Cmd.none )
-
-        UpdateCategories category isChecked ->
-            let
-                updatedCategories =
-                    if isChecked then
-                        model.unselectedCategories |> List.filter (\d -> not (d == category))
-
-                    else
-                        category :: model.unselectedCategories
-            in
-            ( { model | unselectedCategories = updatedCategories }, Cmd.none )
-
-        GotServerResponse (Ok categories) ->
-            ( { model | raceCategories = categories }, Cmd.none )
-
-        GotServerResponse (Err error) ->
-            ( { model | raceCategories = [] }, Cmd.none )
-
-
-getServerResponse : Cmd Msg
-getServerResponse =
     let
-        list =
+        filePathFromItem { category, season } =
+            "https://y047aka.github.io/MotorSportsData/schedules/"
+                ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
+    in
+    ( Model [] [] Time.utc (Time.millisToPosix 0)
+    , Cmd.batch <|
+        List.map (filePathFromItem >> getServerResponse GotServerResponse)
             [ { category = "F1", season = "2019" }
             , { category = "FormulaE", season = "2018-19" }
             , { category = "WEC", season = "2018-19" }
@@ -99,15 +64,83 @@ getServerResponse =
             , { category = "MotoGP", season = "2019" }
             , { category = "AirRace", season = "2019" }
             ]
+    )
 
-        filePathFromItem { category, season } =
-            "https://y047aka.github.io/MotorSportsData/schedules/"
-                ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
+
+
+-- UPDATE
+
+
+type Msg
+    = Tick Time.Posix
+    | UpdateCategories String Bool
+    | GotServerResponse (Result Http.Error Season)
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
+update msg model =
+    case msg of
+        Tick newTime ->
+            ( { model | time = newTime }, Cmd.none )
+
+        UpdateCategories category isChecked ->
+            let
+                updatedCategories =
+                    if isChecked then
+                        model.unselectedCategories |> List.filter (\d -> not (d == category))
+
+                    else
+                        category :: model.unselectedCategories
+            in
+            ( { model | unselectedCategories = updatedCategories }, Cmd.none )
+
+        GotServerResponse (Ok category) ->
+            ( { model | raceCategories = List.sortWith compare (category :: model.raceCategories) }
+            , Cmd.none
+            )
+
+        GotServerResponse (Err error) ->
+            ( model, Cmd.none )
+
+
+compare : Season -> Season -> Order
+compare a b =
+    let
+        enumarate =
+            [ "F1"
+            , "Formula E"
+            , "WEC"
+            , "WEC"
+            , "ELMS"
+            , "IMSA WSCC"
+            , "IndyCar"
+            , "NASCAR"
+            , "SUPER FORMULA"
+            , "SUPER GT"
+            , "DTM"
+            , "Blancpain GT"
+            , "IGTC"
+            , "WTCR"
+            , "Super Taikyu"
+            , "WRC"
+            , "MotoGP"
+            , "Red Bull Air Race"
+            ]
     in
-    list
-        |> List.map (filePathFromItem >> getServerResponseWithCategoryTask)
-        |> Task.sequence
-        |> Task.attempt GotServerResponse
+    if a.seriesName == b.seriesName then
+        EQ
+
+    else
+        case List.dropWhile (\x -> x /= a.seriesName && x /= b.seriesName) enumarate of
+            x :: _ ->
+                if x == a.seriesName then
+                    LT
+
+                else
+                    GT
+
+            _ ->
+                LT
 
 
 
