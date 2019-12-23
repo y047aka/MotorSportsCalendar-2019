@@ -6,6 +6,7 @@ import Html.Attributes exposing (checked, class, for, id, type_, value)
 import Html.Events exposing (onCheck)
 import Http
 import Iso8601
+import List.Extra as List
 import Page
 import Races exposing (Race, Season, getServerResponse)
 import Time exposing (Month(..))
@@ -94,10 +95,52 @@ update msg model =
             ( { model | unselectedCategories = updatedCategories }, Cmd.none )
 
         GotServerResponse (Ok category) ->
-            ( { model | raceCategories = category :: model.raceCategories }, Cmd.none )
+            ( { model | raceCategories = List.sortWith compare (category :: model.raceCategories) }
+            , Cmd.none
+            )
 
         GotServerResponse (Err error) ->
             ( model, Cmd.none )
+
+
+compare : Season -> Season -> Order
+compare a b =
+    let
+        enumarate =
+            [ "F1"
+            , "Formula E"
+            , "WEC"
+            , "WEC"
+            , "ELMS"
+            , "IMSA WSCC"
+            , "IndyCar"
+            , "NASCAR"
+            , "SUPER FORMULA"
+            , "SUPER GT"
+            , "DTM"
+            , "Blancpain GT"
+            , "IGTC"
+            , "WTCR"
+            , "Super Taikyu"
+            , "WRC"
+            , "MotoGP"
+            , "Red Bull Air Race"
+            ]
+    in
+    if a.seriesName == b.seriesName then
+        EQ
+
+    else
+        case List.dropWhile (\x -> x /= a.seriesName && x /= b.seriesName) enumarate of
+            x :: _ ->
+                if x == a.seriesName then
+                    LT
+
+                else
+                    GT
+
+            _ ->
+                LT
 
 
 
