@@ -1,7 +1,7 @@
 module Main exposing (main)
 
 import Browser
-import Html exposing (Html, br, caption, div, input, label, li, nav, node, section, table, td, text, th, tr, ul)
+import Html exposing (Html, br, caption, div, input, label, li, nav, section, table, td, text, th, tr, ul)
 import Html.Attributes exposing (checked, class, for, id, type_, value)
 import Html.Events exposing (onCheck)
 import Http
@@ -94,7 +94,7 @@ update msg model =
             let
                 updatedCategories =
                     if isChecked then
-                        model.unselectedCategories |> List.filter (\d -> not (d == category))
+                        List.filter (\d -> not (d == category)) model.unselectedCategories
 
                     else
                         category :: model.unselectedCategories
@@ -173,10 +173,10 @@ viewHeatMap model =
         sundays =
             Time.range Sunday 1 model.zone start until
     in
-    section [ class "annual" ]
-        (viewHeatMapHeader model
+    section [ class "annual" ] <|
+        viewHeatMapHeader model.unselectedCategories
             :: (model.raceCategories
-                    |> List.filter (\series -> not (model.unselectedCategories |> List.member series.seriesName))
+                    |> List.filter (\series -> not (List.member series.seriesName model.unselectedCategories))
                     |> List.map
                         (\series ->
                             let
@@ -195,11 +195,10 @@ viewHeatMap model =
                                 ]
                         )
                )
-        )
 
 
-viewHeatMapHeader : Model -> Html Msg
-viewHeatMapHeader model =
+viewHeatMapHeader : List String -> Html Msg
+viewHeatMapHeader unselectedCategories =
     let
         listItem d =
             li []
@@ -207,7 +206,7 @@ viewHeatMapHeader model =
                     [ id d.id
                     , type_ "checkbox"
                     , value d.value
-                    , checked <| not (List.member d.value model.unselectedCategories)
+                    , checked <| not (List.member d.value unselectedCategories)
                     , onCheck <| UpdateCategories d.value
                     ]
                     []
@@ -247,12 +246,13 @@ viewTicks sundays =
         tableheader posix =
             if isBeginningOfMonth posix then
                 th []
-                    [ text (Time.toMonth Time.utc posix |> stringFromMonth) ]
+                    [ text <| stringFromMonth (Time.toMonth Time.utc posix) ]
 
             else
                 th [] []
     in
-    tr [] (sundays |> List.map tableheader)
+    tr [] <|
+        List.map tableheader sundays
 
 
 viewRaces : List Time.Posix -> List Race -> Time.Posix -> Html Msg
@@ -263,10 +263,10 @@ viewRaces sundays races currentPosix =
                 Scheduled race ->
                     td [ class "raceweek" ]
                         [ label []
-                            [ text (Time.toDay Time.utc sundayPosix |> String.fromInt)
+                            [ text <| String.fromInt (Time.toDay Time.utc sundayPosix)
                             , input [ type_ "checkbox" ] []
                             , div []
-                                [ text (race.posix |> Iso8601.fromTime |> String.left 10)
+                                [ text <| String.left 10 (Iso8601.fromTime race.posix)
                                 , br [] []
                                 , text race.name
                                 ]
@@ -279,7 +279,8 @@ viewRaces sundays races currentPosix =
                 Past ->
                     td [ class "past" ] []
     in
-    tr [] (sundays |> List.map tdCell)
+    tr [] <|
+        List.map tdCell sundays
 
 
 
