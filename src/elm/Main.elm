@@ -20,7 +20,7 @@ main =
         { init = init
         , update = update
         , view = view
-        , subscriptions = subscriptions
+        , subscriptions = \_ -> Sub.none
         }
 
 
@@ -46,8 +46,8 @@ init _ =
     ( Model [] [] Time.utc (Time.millisToPosix 0)
     , Cmd.batch <|
         Task.perform AdjustTimeZone Time.here
-            :: List.map
-                (filePathFromItem >> getServerResponse GotServerResponse)
+            :: Task.perform Tick Time.now
+            :: List.map (filePathFromItem >> getServerResponse GotServerResponse)
                 [ { category = "F1", season = "2019" }
                 , { category = "FormulaE", season = "2018-19" }
                 , { category = "WEC", season = "2018-19" }
@@ -148,15 +148,6 @@ compare a b =
 
             _ ->
                 LT
-
-
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Time.every 1000 Tick
 
 
 
