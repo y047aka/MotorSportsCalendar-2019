@@ -9,6 +9,7 @@ import Iso8601
 import List.Extra as List
 import Page
 import Races exposing (Race, Season, getServerResponse)
+import Task
 import Time exposing (Month(..))
 import Time.Extra as Time exposing (Interval(..))
 import Weekend exposing (Weekend(..))
@@ -19,7 +20,7 @@ main =
         { init = init
         , update = update
         , view = view
-        , subscriptions = subscriptions
+        , subscriptions = \_ -> Sub.none
         }
 
 
@@ -44,26 +45,28 @@ init _ =
     in
     ( Model [] [] Time.utc (Time.millisToPosix 0)
     , Cmd.batch <|
-        List.map (filePathFromItem >> getServerResponse GotServerResponse)
-            [ { category = "F1", season = "2019" }
-            , { category = "FormulaE", season = "2018-19" }
-            , { category = "WEC", season = "2018-19" }
-            , { category = "WEC", season = "2019-20" }
-            , { category = "ELMS", season = "2019" }
-            , { category = "IMSA", season = "2019" }
-            , { category = "IndyCar", season = "2019" }
-            , { category = "NASCAR", season = "2019" }
-            , { category = "SuperFormula", season = "2019" }
-            , { category = "SuperGT", season = "2019" }
-            , { category = "DTM", season = "2019" }
-            , { category = "BlancpainGT", season = "2019" }
-            , { category = "IGTC", season = "2019" }
-            , { category = "WTCR", season = "2019" }
-            , { category = "SuperTaikyu", season = "2019" }
-            , { category = "WRC", season = "2019" }
-            , { category = "MotoGP", season = "2019" }
-            , { category = "AirRace", season = "2019" }
-            ]
+        Task.perform AdjustTimeZone Time.here
+            :: Task.perform Tick Time.now
+            :: List.map (filePathFromItem >> getServerResponse GotServerResponse)
+                [ { category = "F1", season = "2019" }
+                , { category = "FormulaE", season = "2018-19" }
+                , { category = "WEC", season = "2018-19" }
+                , { category = "WEC", season = "2019-20" }
+                , { category = "ELMS", season = "2019" }
+                , { category = "IMSA", season = "2019" }
+                , { category = "IndyCar", season = "2019" }
+                , { category = "NASCAR", season = "2019" }
+                , { category = "SuperFormula", season = "2019" }
+                , { category = "SuperGT", season = "2019" }
+                , { category = "DTM", season = "2019" }
+                , { category = "BlancpainGT", season = "2019" }
+                , { category = "IGTC", season = "2019" }
+                , { category = "WTCR", season = "2019" }
+                , { category = "SuperTaikyu", season = "2019" }
+                , { category = "WRC", season = "2019" }
+                , { category = "MotoGP", season = "2019" }
+                , { category = "AirRace", season = "2019" }
+                ]
     )
 
 
@@ -72,7 +75,8 @@ init _ =
 
 
 type Msg
-    = Tick Time.Posix
+    = AdjustTimeZone Time.Zone
+    | Tick Time.Posix
     | UpdateCategories String Bool
     | GotServerResponse (Result Http.Error Season)
 
@@ -80,6 +84,9 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
+        AdjustTimeZone newZone ->
+            ( { model | zone = newZone }, Cmd.none )
+
         Tick newTime ->
             ( { model | time = newTime }, Cmd.none )
 
@@ -144,15 +151,6 @@ compare a b =
 
 
 
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Time.every 1000 Tick
-
-
-
 -- VIEW
 
 
@@ -166,17 +164,14 @@ view model =
 viewHeatMap : Model -> Html Msg
 viewHeatMap model =
     let
-        utc =
-            Time.utc
-
         start =
-            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
+            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix model.zone
 
         until =
-            start |> Time.add Year 1 utc
+            start |> Time.add Year 1 model.zone
 
         sundays =
-            Time.range Sunday 1 utc start until
+            Time.range Sunday 1 model.zone start until
     in
     section [ class "annual" ]
         (viewHeatMapHeader model
