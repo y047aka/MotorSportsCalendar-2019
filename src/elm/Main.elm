@@ -31,7 +31,6 @@ main =
 type alias Model =
     { raceCategories : List Season
     , unselectedCategories : List String
-    , zone : Time.Zone
     , time : Time.Posix
     }
 
@@ -43,10 +42,9 @@ init _ =
             "https://y047aka.github.io/MotorSportsData/schedules/"
                 ++ (category ++ "/" ++ category ++ "_" ++ season ++ ".json")
     in
-    ( Model [] [] Time.utc (Time.millisToPosix 0)
+    ( Model [] [] (Time.millisToPosix 0)
     , Cmd.batch <|
-        Task.perform AdjustTimeZone Time.here
-            :: Task.perform Tick Time.now
+        Task.perform Tick Time.now
             :: List.map (filePathFromItem >> getServerResponse GotServerResponse)
                 [ { category = "F1", season = "2019" }
                 , { category = "FormulaE", season = "2018-19" }
@@ -75,8 +73,7 @@ init _ =
 
 
 type Msg
-    = AdjustTimeZone Time.Zone
-    | Tick Time.Posix
+    = Tick Time.Posix
     | UpdateCategories String Bool
     | GotServerResponse (Result Http.Error Season)
 
@@ -84,9 +81,6 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        AdjustTimeZone newZone ->
-            ( { model | zone = newZone }, Cmd.none )
-
         Tick newTime ->
             ( { model | time = newTime }, Cmd.none )
 
@@ -165,13 +159,13 @@ viewHeatMap : Model -> Html Msg
 viewHeatMap model =
     let
         start =
-            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix model.zone
+            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix Time.utc
 
         until =
-            start |> Time.add Year 1 model.zone
+            start |> Time.add Year 1 Time.utc
 
         sundays =
-            Time.range Sunday 1 model.zone start until
+            Time.range Sunday 1 Time.utc start until
     in
     section [ class "annual" ] <|
         viewHeatMapHeader model.unselectedCategories
