@@ -164,17 +164,14 @@ view model =
 viewHeatMap : Model -> Html Msg
 viewHeatMap model =
     let
-        utc =
-            Time.utc
-
         start =
-            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix utc
+            Time.Parts 2019 Jan 1 0 0 0 0 |> Time.partsToPosix model.zone
 
         until =
-            start |> Time.add Year 1 utc
+            start |> Time.add Year 1 model.zone
 
         sundays =
-            Time.range Sunday 1 utc start until
+            Time.range Sunday 1 model.zone start until
     in
     section [ class "annual" ]
         (viewHeatMapHeader model
