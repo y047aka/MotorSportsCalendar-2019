@@ -1,10 +1,8 @@
 {
   "scripts": {
-    "compile": "elm make src/elm/Main.elm --optimize --output=public/build/main.optimized.js",
-    "minify:elm": "google-closure-compiler --js=public/build/main.optimized.js --js_output_file=public/build/main.js",
-    "postminify:elm": "rimraf public/build/main.optimized.js",
-    "build": "npm run compile && npm run minify:elm",
-    "start": "elm-watch hot",
+    "start": "run-pty % elm-watch hot % npm run esbuild -- --serve=9000 --servedir=public",
+    "build": "elm-watch make --optimize && npm run esbuild -- --minify",
+    "esbuild": "esbuild app.ts --bundle --outdir=public/build --public-path=/build/",
     "test": "elm-test"
   },
   "devDependencies": {
@@ -12,7 +10,7 @@
     "elm-format": "^0.8.5",
     "elm-test": "^0.19.1-revision10",
     "elm-watch": "^1.1.1",
-    "google-closure-compiler": "^20221102.0.1",
-    "rimraf": "^3.0.2"
+    "esbuild": "^0.16.7",
+    "run-pty": "^4.0.3"
   }
 }
